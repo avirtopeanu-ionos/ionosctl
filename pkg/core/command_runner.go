@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 
+	"github.com/ionos-cloud/ionosctl/pkg/autoscaling"
 	"github.com/ionos-cloud/ionosctl/pkg/config"
 	"github.com/ionos-cloud/ionosctl/pkg/resources"
 	"github.com/ionos-cloud/ionosctl/pkg/utils/clierror"
@@ -145,6 +146,9 @@ type CommandConfig struct {
 	BackupUnit    func() resources.BackupUnitsService
 	Pccs          func() resources.PccsService
 	K8s           func() resources.K8sService
+	// Resources Autoscaling
+	Templates func() autoscaling.TemplatesService
+
 	// Context
 	Context context.Context
 }
@@ -156,6 +160,24 @@ func (c *CommandConfig) InitClient() (*resources.Client, error) {
 		return nil, err
 	}
 	clientSvc, err := resources.NewClientService(
+		viper.GetString(config.Username),
+		viper.GetString(config.Password),
+		viper.GetString(config.Token), // Token support
+		viper.GetString(config.ArgServerUrl),
+	)
+	if err != nil {
+		return nil, err
+	}
+	return clientSvc.Get(), nil
+}
+
+// InitAutoscalingClient for Commands
+func (c *CommandConfig) InitAutoscalingClient() (*autoscaling.Client, error) {
+	err := config.Load()
+	if err != nil {
+		return nil, err
+	}
+	clientSvc, err := autoscaling.NewClientService(
 		viper.GetString(config.Username),
 		viper.GetString(config.Password),
 		viper.GetString(config.Token), // Token support
@@ -189,6 +211,12 @@ func (c *CommandConfig) InitServices(client *resources.Client) error {
 	c.BackupUnit = func() resources.BackupUnitsService { return resources.NewBackupUnitService(client, c.Context) }
 	c.Pccs = func() resources.PccsService { return resources.NewPrivateCrossConnectService(client, c.Context) }
 	c.K8s = func() resources.K8sService { return resources.NewK8sService(client, c.Context) }
+	return nil
+}
+
+// InitAutoscalingServices for Commands
+func (c *CommandConfig) InitAutoscalingServices(client *autoscaling.Client) error {
+	c.Templates = func() autoscaling.TemplatesService { return autoscaling.NewTemplateService(client, c.Context) }
 	return nil
 }
 

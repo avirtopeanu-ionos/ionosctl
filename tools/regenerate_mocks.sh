@@ -29,3 +29,10 @@ mockgen -source pcc.go >mocks/PccService.go
 mockgen -source k8s.go >mocks/K8sService.go
 
 pushd >/dev/null || exit
+
+pushd "pkg/autoscaling" >/dev/null || exit
+
+mockgen -source client.go >mocks/ClientService.go
+mockgen -source template.go >mocks/TemplateService.go
+
+pushd >/dev/null || exit
