@@ -188,8 +188,8 @@ func (c *CommandConfig) InitAutoscalingClient() (*autoscaling.Client, error) {
 	clientSvc, err := autoscaling.NewClientService(
 		viper.GetString(config.Username),
 		viper.GetString(config.Password),
-		viper.GetString(config.Token),        // Token support
-		viper.GetString(config.ArgServerUrl), // TODO: to be updated
+		viper.GetString(config.Token), // Token support
+		viper.GetString(config.ArgServerUrl),
 	)
 	if err != nil {
 		return nil, err

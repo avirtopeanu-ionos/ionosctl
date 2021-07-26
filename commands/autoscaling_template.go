@@ -13,7 +13,7 @@ import (
 	"github.com/ionos-cloud/ionosctl/pkg/utils"
 	"github.com/ionos-cloud/ionosctl/pkg/utils/clierror"
 	"github.com/ionos-cloud/ionosctl/pkg/utils/printer"
-	ionoscloudautoscaling "github.com/ionos-cloud/sdk-go-autoscaling"
+	ionoscloudAutoscaling "github.com/ionos-cloud/sdk-go-autoscaling"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -81,7 +81,9 @@ func autoscalingTemplate() *core.Command {
 		Verb:      "create",
 		Aliases:   []string{"c"},
 		ShortDesc: "Create an Autoscaling Template",
-		LongDesc: `Use this command to create an Autoscaling Template.
+		LongDesc: `Use this command to create an Autoscaling Template. The Autoscaling Template contains information for the VMs. You can specify the name, location, availability zone, cores, cpu family for the VMs.
+
+Regarding the ram size, it must be specified in multiples of 256 MB with a minimum of 256 MB; however, if you set ramHotPlug to TRUE then you must use a minimum of 1024 MB. If you set the RAM size more than 240GB, then ramHotPlug will be set to FALSE and can not be set to TRUE unless RAM size not set to less than 240GB.
 
 You can wait for the Request to be executed using ` + "`" + `--wait-for-request` + "`" + ` option.`,
 		Example:    "",
@@ -89,14 +91,24 @@ You can wait for the Request to be executed using ` + "`" + `--wait-for-request`
 		CmdRun:     RunAutoscalingTemplateCreate,
 		InitClient: true,
 	})
-	create.AddStringFlag(config.ArgName, config.ArgNameShort, "Unnamed Data Center", "Name of the Data Center")
-	create.AddStringFlag(config.ArgDescription, config.ArgDescriptionShort, "", "Description of the Data Center")
-	create.AddStringFlag(config.ArgLocation, config.ArgLocationShort, "de/txl", "Location for the Data Center")
+	create.AddStringFlag(config.ArgName, config.ArgNameShort, "Unnamed Autoscaling Template", "Name of the Autoscaling Template")
+	create.AddStringFlag(config.ArgLocation, config.ArgLocationShort, "de/txl", "Location for the Autoscaling Template")
 	_ = create.Command.RegisterFlagCompletionFunc(config.ArgLocation, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		return getLocationIds(os.Stderr), cobra.ShellCompDirectiveNoFileComp
 	})
-	create.AddBoolFlag(config.ArgWaitForRequest, config.ArgWaitForRequestShort, config.DefaultWait, "Wait for the Request for Data Center creation to be executed")
-	create.AddIntFlag(config.ArgTimeout, config.ArgTimeoutShort, config.DefaultTimeoutSeconds, "Timeout option for Request for Data Center creation [seconds]")
+	create.AddStringFlag(config.ArgAvailabilityZone, config.ArgAvailabilityZoneShort, "AUTO", "Zone where the VMs created using this Autoscaling Template")
+	_ = create.Command.RegisterFlagCompletionFunc(config.ArgCpuFamily, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		return []string{"AUTO", "ZONE_1", "ZONE_2"}, cobra.ShellCompDirectiveNoFileComp
+	})
+	create.AddIntFlag(config.ArgCores, "", 1, "The total number of cores for the VMs. Minimum: 1")
+	create.AddStringFlag(config.ArgRam, "", "", "The amount of memory for the VMs. Size must be specified in multiples of 256. e.g. --ram 2048 or --ram 2048MB")
+	_ = create.Command.RegisterFlagCompletionFunc(config.ArgRam, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		return []string{"256MB", "512MB", "1024MB", "2048MB", "2GB", "3GB", "4GB", "5GB", "10GB", "16GB"}, cobra.ShellCompDirectiveNoFileComp
+	})
+	create.AddStringFlag(config.ArgCPUFamily, "", "", "CPU family for the VMs created using the Autoscaling Template. If null, the VM will be created with the default CPU family from the assigned location")
+	_ = create.Command.RegisterFlagCompletionFunc(config.ArgCPUFamily, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		return []string{"AMD_OPTERON", "INTEL_XEON", "INTEL_SKYLAKE"}, cobra.ShellCompDirectiveNoFileComp
+	})
 
 	/*
 		Delete Command
@@ -108,8 +120,6 @@ You can wait for the Request to be executed using ` + "`" + `--wait-for-request`
 		Aliases:   []string{"d"},
 		ShortDesc: "Delete an Autoscaling Template",
 		LongDesc: `Use this command to delete a specified Autoscaling Template from your account.
-
-NOTE: This is a highly destructive operation which should be used with extreme caution!
 
 Required values to run command:
 
@@ -123,8 +133,6 @@ Required values to run command:
 	_ = deleteCmd.Command.RegisterFlagCompletionFunc(config.ArgTemplateId, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		return getTemplatesIds(os.Stderr), cobra.ShellCompDirectiveNoFileComp
 	})
-	deleteCmd.AddBoolFlag(config.ArgWaitForRequest, config.ArgWaitForRequestShort, config.DefaultWait, "Wait for the Request for Data Center deletion")
-	deleteCmd.AddIntFlag(config.ArgTimeout, config.ArgTimeoutShort, config.DefaultTimeoutSeconds, "Timeout option for Request for Data Center deletion [seconds]")
 
 	return autoscalingTemplateCmd
 }
@@ -134,25 +142,25 @@ func PreRunAutoscalingTemplateId(c *core.PreCommandConfig) error {
 }
 
 func RunAutoscalingTemplateList(c *core.CommandConfig) error {
-	_, _, err := c.AutoscalingTemplates().List()
+	autoscalingTemplates, _, err := c.AutoscalingTemplates().List()
 	if err != nil {
 		return err
 	}
-	return c.Printer.Print(getTemplatePrint(nil, c, nil))
+	return c.Printer.Print(getTemplatePrint(nil, c, getAutoscalinTemplates(autoscalingTemplates)))
 }
 
 func RunAutoscalingTemplateGet(c *core.CommandConfig) error {
-	dc, _, err := c.AutoscalingTemplates().Get(viper.GetString(core.GetFlagName(c.NS, config.ArgTemplateId)))
+	autoTemplate, _, err := c.AutoscalingTemplates().Get(viper.GetString(core.GetFlagName(c.NS, config.ArgTemplateId)))
 	if err != nil {
 		return err
 	}
-	return c.Printer.Print(getTemplatePrint(nil, c, []sdkAutoscaling.Template{*dc}))
+	return c.Printer.Print(getTemplatePrint(nil, c, []sdkAutoscaling.Template{*autoTemplate}))
 }
 
 func RunAutoscalingTemplateCreate(c *core.CommandConfig) error {
 	dc, resp, err := c.AutoscalingTemplates().Create(sdkAutoscaling.Template{
-		Template: ionoscloudautoscaling.Template{
-			Properties: &ionoscloudautoscaling.TemplateProperties{
+		Template: ionoscloudAutoscaling.Template{
+			Properties: &ionoscloudAutoscaling.TemplateProperties{
 				AvailabilityZone: nil,
 				Cores:            nil,
 				CpuFamily:        nil,
@@ -171,7 +179,7 @@ func RunAutoscalingTemplateCreate(c *core.CommandConfig) error {
 }
 
 func RunAutoscalingTemplateDelete(c *core.CommandConfig) error {
-	if err := utils.AskForConfirm(c.Stdin, c.Printer, "delete data center"); err != nil {
+	if err := utils.AskForConfirm(c.Stdin, c.Printer, "delete autoscaling template"); err != nil {
 		return err
 	}
 	resp, err := c.AutoscalingTemplates().Delete(viper.GetString(core.GetFlagName(c.NS, config.ArgTemplateId)))
@@ -179,6 +187,14 @@ func RunAutoscalingTemplateDelete(c *core.CommandConfig) error {
 		return err
 	}
 	return c.Printer.Print(getTemplatePrint(resp, c, nil))
+}
+
+func getAutoscalinTemplates(templates sdkAutoscaling.Templates) []sdkAutoscaling.Template {
+	tpls := make([]sdkAutoscaling.Template, 0)
+	for _, tpl := range *templates.Items {
+		tpls = append(tpls, sdkAutoscaling.Template{Template: tpl})
+	}
+	return tpls
 }
 
 // Output Printing

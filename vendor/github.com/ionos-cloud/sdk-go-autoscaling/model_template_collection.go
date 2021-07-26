@@ -22,7 +22,7 @@ type TemplateCollection struct {
 	Id *string `json:"id,omitempty"`
 	// Type of resource
 	Type *string `json:"type,omitempty"`
-	Items *[]Resource `json:"items,omitempty"`
+	Items *[]Template `json:"items,omitempty"`
 }
 
 
@@ -157,8 +157,8 @@ func (o *TemplateCollection) HasType() bool {
 
 
 // GetItems returns the Items field value
-// If the value is explicit nil, the zero value for []Resource will be returned
-func (o *TemplateCollection) GetItems() *[]Resource {
+// If the value is explicit nil, the zero value for []Template will be returned
+func (o *TemplateCollection) GetItems() *[]Template {
 	if o == nil {
 		return nil
 	}
@@ -171,7 +171,7 @@ func (o *TemplateCollection) GetItems() *[]Resource {
 // GetItemsOk returns a tuple with the Items field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *TemplateCollection) GetItemsOk() (*[]Resource, bool) {
+func (o *TemplateCollection) GetItemsOk() (*[]Template, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -181,7 +181,7 @@ func (o *TemplateCollection) GetItemsOk() (*[]Resource, bool) {
 }
 
 // SetItems sets field value
-func (o *TemplateCollection) SetItems(v []Resource) {
+func (o *TemplateCollection) SetItems(v []Template) {
 
 
 	o.Items = &v

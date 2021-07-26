@@ -26,9 +26,9 @@ type clientService struct {
 
 var _ ClientService = &clientService{}
 
-func NewClientService(name, pwd, token, url string) (ClientService, error) {
-	if url == "" {
-		return nil, errors.New("server-url incorrect")
+func NewClientService(name, pwd, token, hostUrl string) (ClientService, error) {
+	if hostUrl == "" {
+		return nil, errors.New("host-url incorrect")
 	}
 	if token == "" && (name == "" || pwd == "") {
 		return nil, errors.New("username, password or token incorrect")
@@ -39,7 +39,7 @@ func NewClientService(name, pwd, token, url string) (ClientService, error) {
 		Token:    token,
 		Servers: ionoscloudautoscaling.ServerConfigurations{
 			ionoscloudautoscaling.ServerConfiguration{
-				URL: url,
+				URL: hostUrl,
 			},
 		},
 	}
