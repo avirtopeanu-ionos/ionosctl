@@ -189,7 +189,7 @@ func (c *CommandConfig) InitAutoscalingClient() (*autoscaling.Client, error) {
 		viper.GetString(config.Username),
 		viper.GetString(config.Password),
 		viper.GetString(config.Token),        // Token support
-		"api.ionos.com/cloudapi/autoscaling", // TODO: to be updated
+		viper.GetString(config.ArgServerUrl), // TODO: to be updated
 	)
 	if err != nil {
 		return nil, err

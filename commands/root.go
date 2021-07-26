@@ -170,6 +170,8 @@ func addCommands() {
 	rootCmd.AddCommand(pcc())
 	rootCmd.AddCommand(share())
 	rootCmd.AddCommand(k8s())
+	// Autoscaling Resources Commands
+	rootCmd.AddCommand(autoscaling())
 }
 
 const usageTemplate = `USAGE: {{if .Runnable}}

@@ -11,11 +11,12 @@ func autoscaling() *core.Command {
 			Use:              "autoscaling",
 			Aliases:          []string{"auto"},
 			Short:            "Autoscaling Resources Operations",
-			Long:             "The sub-commands of `ionosctl autoscaling` allow you to use Autoscaling Resources.",
+			Long:             "The sub-commands of `ionosctl autoscaling` allow you to manage Autoscaling Resources.",
 			TraverseChildren: true,
 		},
 	}
-	autoscalingCmd.AddCommand(k8sVersion())
+
+	autoscalingCmd.AddCommand(autoscalingTemplate())
 
 	return autoscalingCmd
 }

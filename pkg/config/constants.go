@@ -26,6 +26,7 @@ const (
 	ArgForce                 = "force"
 	ArgForceShort            = "f"
 	ArgServerUrl             = "api-url"
+	ArgAutoscalingUrl        = "api-autoscaling-url"
 	ArgServerUrlShort        = "u"
 	ArgCols                  = "cols"
 	ArgUserData              = "user-data"
@@ -142,6 +143,7 @@ const (
 	ArgK8sNodePoolId  = "nodepool-id"
 	ArgK8sNodeId      = "node-id"
 	ArgCdromId        = "cdrom-id"
+	ArgTemplateId     = "template-id"
 )
 
 // Required Flags
@@ -171,24 +173,26 @@ const (
 	RequiredFlagK8sNodePoolId  = "The unique K8s Node Pool Id " + RequiredFlag
 	RequiredFlagK8sNodeId      = "The unique K8s Node Id " + RequiredFlag
 	RequiredFlagCdromId        = "The unique Cdrom Id " + RequiredFlag
+	RequiredFlagTemplateId     = "The unique Template Id " + RequiredFlag
 )
 
 // Default values
 const (
-	DefaultApiURL          = "https://api.ionos.com/cloudapi/v5"
-	DefaultConfigFileName  = "/config.json"
-	DefaultOutputFormat    = "text"
-	DefaultWait            = false
-	DefaultPublic          = false
-	DefaultDhcp            = true
-	DefaultTimeoutSeconds  = int(60)
-	K8sTimeoutSeconds      = int(600)
-	DefaultServerCores     = 2
-	DefaultServerRAM       = 256
-	DefaultVolumeSize      = 10
-	DefaultNicLanId        = 1
-	DefaultServerCPUFamily = "AMD_OPTERON"
-	Username               = "userdata.name"
-	Password               = "userdata.password"
-	Token                  = "userdata.token"
+	DefaultApiURL            = "https://api.ionos.com/cloudapi/v5"
+	DefaultAutoscalingApiURL = "https://api.ionos.com/cloudapi/autoscaling"
+	DefaultConfigFileName    = "/config.json"
+	DefaultOutputFormat      = "text"
+	DefaultWait              = false
+	DefaultPublic            = false
+	DefaultDhcp              = true
+	DefaultTimeoutSeconds    = int(60)
+	K8sTimeoutSeconds        = int(600)
+	DefaultServerCores       = 2
+	DefaultServerRAM         = 256
+	DefaultVolumeSize        = 10
+	DefaultNicLanId          = 1
+	DefaultServerCPUFamily   = "AMD_OPTERON"
+	Username                 = "userdata.name"
+	Password                 = "userdata.password"
+	Token                    = "userdata.token"
 )
