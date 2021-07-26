@@ -34,5 +34,6 @@ pushd "pkg/autoscaling" >/dev/null || exit
 
 mockgen -source client.go >mocks/ClientService.go
 mockgen -source template.go >mocks/TemplateService.go
+mockgen -source group.go >mocks/GroupService.go
 
 pushd >/dev/null || exit
