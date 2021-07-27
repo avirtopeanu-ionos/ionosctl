@@ -10,6 +10,14 @@ type Template struct {
 	ionoscloudautoscaling.Template
 }
 
+type TemplateVolume struct {
+	ionoscloudautoscaling.TemplateVolume
+}
+
+type TemplateNic struct {
+	ionoscloudautoscaling.TemplateNic
+}
+
 type TemplateProperties struct {
 	ionoscloudautoscaling.TemplateProperties
 }

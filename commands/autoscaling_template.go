@@ -3,8 +3,10 @@ package commands
 import (
 	"context"
 	"errors"
+	"fmt"
 	"io"
 	"os"
+	"strconv"
 
 	"github.com/fatih/structs"
 	"github.com/ionos-cloud/ionosctl/pkg/config"
@@ -46,7 +48,7 @@ func autoscalingTemplate() *core.Command {
 		Aliases:    []string{"l", "ls"},
 		ShortDesc:  "List Autoscaling Templates",
 		LongDesc:   "Use this command to retrieve a complete list of Autoscaling Templates provisioned under your account.",
-		Example:    "",
+		Example:    listTemplateAutoscalingExample,
 		PreCmdRun:  noPreRun,
 		CmdRun:     RunAutoscalingTemplateList,
 		InitClient: true,
@@ -62,7 +64,7 @@ func autoscalingTemplate() *core.Command {
 		Aliases:    []string{"g"},
 		ShortDesc:  "Get an Autoscaling Template",
 		LongDesc:   "Use this command to retrieve details about an Autoscaling Template by using its ID.\n\nRequired values to run command:\n\n* Autoscaling Template Id",
-		Example:    "",
+		Example:    getTemplateAutoscalingExample,
 		PreCmdRun:  PreRunAutoscalingTemplateId,
 		CmdRun:     RunAutoscalingTemplateGet,
 		InitClient: true,
@@ -83,10 +85,12 @@ func autoscalingTemplate() *core.Command {
 		ShortDesc: "Create an Autoscaling Template",
 		LongDesc: `Use this command to create an Autoscaling Template. The Autoscaling Template contains information for the VMs. You can specify the name, location, availability zone, cores, cpu family for the VMs.
 
-Regarding the ram size, it must be specified in multiples of 256 MB with a minimum of 256 MB; however, if you set ramHotPlug to TRUE then you must use a minimum of 1024 MB. If you set the RAM size more than 240GB, then ramHotPlug will be set to FALSE and can not be set to TRUE unless RAM size not set to less than 240GB.
+Regarding the Ram size, it must be specified in multiples of 256 MB with a minimum of 256 MB; however, if you set ramHotPlug to TRUE then you must use a minimum of 1024 MB. If you set the RAM size more than 240GB, then ramHotPlug will be set to FALSE and can not be set to TRUE unless RAM size not set to less than 240GB.
 
-You can wait for the Request to be executed using ` + "`" + `--wait-for-request` + "`" + ` option.`,
-		Example:    "",
+Right now, the Autoscaling Template supports only one Template Volume. Important: the volume created will NOT be deleted on SCALE IN type of Autoscaling Actions. If you want to create a Volume Template, you need to provide Image Id. If you want to see the Volume Template properties, use ` + "`" + `ionosctl autoscaling volume-template list` + "`" + ` command.
+
+Also, the Autoscaling Template supports multiple NIC Templates. To create an Autoscaling Template with multiple NIC Templates use ` + "`" + `--lan-ids "LAN_ID1,LAN_ID2"` + "`" + ` and ` + "`" + `--template-nics "NAME1,NAME2"` + "`" + ` options. It is recommended to use both options. If you want to see the NIC Templates properties, use ` + "`" + `ionosctl autoscaling nic-template list` + "`" + ` command.`,
+		Example:    createTemplateAutoscalingExample,
 		PreCmdRun:  noPreRun,
 		CmdRun:     RunAutoscalingTemplateCreate,
 		InitClient: true,
@@ -101,7 +105,7 @@ You can wait for the Request to be executed using ` + "`" + `--wait-for-request`
 		return []string{"AUTO", "ZONE_1", "ZONE_2"}, cobra.ShellCompDirectiveNoFileComp
 	})
 	create.AddIntFlag(config.ArgCores, "", 1, "The total number of cores for the VMs. Minimum: 1")
-	create.AddStringFlag(config.ArgRam, "", "", "The amount of memory for the VMs. Size must be specified in multiples of 256. e.g. --ram 2048 or --ram 2048MB")
+	create.AddStringFlag(config.ArgRam, "", "2048", "The amount of memory for the VMs. Size must be specified in multiples of 256. e.g. --ram 2048 or --ram 2048MB")
 	_ = create.Command.RegisterFlagCompletionFunc(config.ArgRam, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		return []string{"256MB", "512MB", "1024MB", "2048MB", "2GB", "3GB", "4GB", "5GB", "10GB", "16GB"}, cobra.ShellCompDirectiveNoFileComp
 	})
@@ -109,6 +113,26 @@ You can wait for the Request to be executed using ` + "`" + `--wait-for-request`
 	_ = create.Command.RegisterFlagCompletionFunc(config.ArgCPUFamily, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		return []string{"AMD_OPTERON", "INTEL_XEON", "INTEL_SKYLAKE"}, cobra.ShellCompDirectiveNoFileComp
 	})
+	// Flags for NIC Templates
+	create.AddIntSliceFlag(config.ArgLanIds, "", []int{1}, "Lan Ids for the NIC Templates. Minimum value for Lan Id: 1")
+	create.AddStringSliceFlag(config.ArgTemplateNics, "", []string{"Unnamed Autoscaling NIC Template"}, "Names for the NIC Templates")
+	// Flags for Volume Template
+	create.AddStringFlag(config.ArgImageId, "", "", "Image installed on the Volume. Only Id of the Image is supported currently. Required flag when creating a Volume Template")
+	_ = create.Command.RegisterFlagCompletionFunc(config.ArgImageId, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		return getImageIds(os.Stderr), cobra.ShellCompDirectiveNoFileComp
+	})
+	create.AddStringFlag(config.ArgPassword, config.ArgPasswordShort, "abcde1234", "Image password for the Volume Template")
+	create.AddStringFlag(config.ArgUserData, "", "", "User-Data (Cloud Init) for the Volume Template")
+	create.AddStringFlag(config.ArgTemplateVolume, "", "Unnamed Autoscaling Template Volume", "Name of the Volume Template")
+	create.AddStringFlag(config.ArgSize, "", strconv.Itoa(config.DefaultVolumeSize), "User-defined size for this template volume in GB. e.g.: --size 10 or --size 10GB.")
+	_ = create.Command.RegisterFlagCompletionFunc(config.ArgSize, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		return []string{"10GB", "20GB", "50GB", "100GB", "1TB"}, cobra.ShellCompDirectiveNoFileComp
+	})
+	create.AddStringFlag(config.ArgType, "", "HDD", "Type of the Volume")
+	_ = create.Command.RegisterFlagCompletionFunc(config.ArgLicenceType, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		return []string{"HDD", "SSD", "SSD_PREMIUM", "SSD_STANDARD"}, cobra.ShellCompDirectiveNoFileComp
+	})
+	create.AddStringSliceFlag(config.ArgSshKeys, "", []string{""}, "SSH Keys that have access to the Volume")
 
 	/*
 		Delete Command
@@ -124,7 +148,7 @@ You can wait for the Request to be executed using ` + "`" + `--wait-for-request`
 Required values to run command:
 
 * Autoscaling Template Id`,
-		Example:    "",
+		Example:    deleteTemplateAutoscalingExample,
 		PreCmdRun:  PreRunAutoscalingTemplateId,
 		CmdRun:     RunAutoscalingTemplateDelete,
 		InitClient: true,
@@ -146,7 +170,7 @@ func RunAutoscalingTemplateList(c *core.CommandConfig) error {
 	if err != nil {
 		return err
 	}
-	return c.Printer.Print(getTemplatePrint(nil, c, getAutoscalinTemplates(autoscalingTemplates)))
+	return c.Printer.Print(getTemplatePrint(nil, c, getAutoscalingTemplates(autoscalingTemplates)))
 }
 
 func RunAutoscalingTemplateGet(c *core.CommandConfig) error {
@@ -158,18 +182,13 @@ func RunAutoscalingTemplateGet(c *core.CommandConfig) error {
 }
 
 func RunAutoscalingTemplateCreate(c *core.CommandConfig) error {
+	templateProperties, err := getNewAutoscalingTemplate(c)
+	if err != nil {
+		return err
+	}
 	dc, resp, err := c.AutoscalingTemplates().Create(sdkAutoscaling.Template{
 		Template: ionoscloudAutoscaling.Template{
-			Properties: &ionoscloudAutoscaling.TemplateProperties{
-				AvailabilityZone: nil,
-				Cores:            nil,
-				CpuFamily:        nil,
-				Location:         nil,
-				Name:             nil,
-				Nics:             nil,
-				Ram:              nil,
-				Volumes:          nil,
-			},
+			Properties: &templateProperties.TemplateProperties,
 		},
 	})
 	if err != nil {
@@ -189,7 +208,7 @@ func RunAutoscalingTemplateDelete(c *core.CommandConfig) error {
 	return c.Printer.Print(getTemplatePrint(resp, c, nil))
 }
 
-func getAutoscalinTemplates(templates sdkAutoscaling.Templates) []sdkAutoscaling.Template {
+func getAutoscalingTemplates(templates sdkAutoscaling.Templates) []sdkAutoscaling.Template {
 	tpls := make([]sdkAutoscaling.Template, 0)
 	for _, tpl := range *templates.Items {
 		tpls = append(tpls, sdkAutoscaling.Template{Template: tpl})
@@ -197,10 +216,68 @@ func getAutoscalinTemplates(templates sdkAutoscaling.Templates) []sdkAutoscaling
 	return tpls
 }
 
+func getNewAutoscalingTemplate(c *core.CommandConfig) (*sdkAutoscaling.TemplateProperties, error) {
+	input := ionoscloudAutoscaling.TemplateProperties{}
+	// Autoscaling Template - VM Properties
+	input.SetName(viper.GetString(core.GetFlagName(c.NS, config.ArgName)))
+	input.SetLocation(viper.GetString(core.GetFlagName(c.NS, config.ArgLocation)))
+	input.SetAvailabilityZone(ionoscloudAutoscaling.AvailabilityZone(viper.GetString(core.GetFlagName(c.NS, config.ArgAvailabilityZone))))
+	input.SetCores(viper.GetInt32(core.GetFlagName(c.NS, config.ArgCores)))
+	size, err := utils.ConvertSize(viper.GetString(core.GetFlagName(c.NS, config.ArgRam)), utils.MegaBytes)
+	if err != nil {
+		return nil, err
+	}
+	input.SetRam(int32(size))
+	if viper.IsSet(core.GetFlagName(c.NS, config.ArgCPUFamily)) {
+		input.SetCpuFamily(ionoscloudAutoscaling.CpuFamily(viper.GetString(core.GetFlagName(c.NS, config.ArgCPUFamily))))
+	}
+
+	// Autoscaling NIC Template
+	inputNics := make([]ionoscloudAutoscaling.TemplateNic, 0)
+	nicNames := viper.GetStringSlice(core.GetFlagName(c.NS, config.ArgTemplateNics))
+	lanIds := viper.GetIntSlice(core.GetFlagName(c.NS, config.ArgLanIds))
+	if len(nicNames) != len(lanIds) {
+		return nil, errors.New("error creating NIC Templates. Hint: please use the `--lan-ids` and the `--template-nics` options with the same amount of values")
+	} else {
+		for i := 0; i < len(nicNames); i++ {
+			lanId := int32(lanIds[i])
+			inputNics = append(inputNics, ionoscloudAutoscaling.TemplateNic{
+				Lan:  &lanId,
+				Name: &nicNames[i],
+			})
+		}
+	}
+	input.SetNics(inputNics)
+
+	// Autoscaling Volume Template
+	if viper.IsSet(core.GetFlagName(c.NS, config.ArgImageId)) {
+		inputVolumes := make([]ionoscloudAutoscaling.TemplateVolume, 0)
+		inputVolume := ionoscloudAutoscaling.TemplateVolume{}
+		// Set Properties for Autoscaling Volume Template
+		inputVolume.SetName(viper.GetString(core.GetFlagName(c.NS, config.ArgTemplateVolume)))
+		inputVolume.SetImage(viper.GetString(core.GetFlagName(c.NS, config.ArgImageId)))
+		inputVolume.SetImagePassword(viper.GetString(core.GetFlagName(c.NS, config.ArgPassword)))
+		inputVolume.SetType(ionoscloudAutoscaling.VolumeHwType(viper.GetString(core.GetFlagName(c.NS, config.ArgType))))
+		inputVolume.SetUserData(viper.GetString(core.GetFlagName(c.NS, config.ArgUserData)))
+		inputVolume.SetSshKeys(viper.GetStringSlice(core.GetFlagName(c.NS, config.ArgSshKeys)))
+		volumeSize, err := utils.ConvertSize(viper.GetString(core.GetFlagName(c.NS, config.ArgSize)), utils.GigaBytes)
+		if err != nil {
+			return nil, err
+		}
+		inputVolume.SetSize(int32(volumeSize))
+		inputVolumes = append(inputVolumes, inputVolume)
+		input.SetVolumes(inputVolumes)
+	}
+
+	return &sdkAutoscaling.TemplateProperties{
+		TemplateProperties: input,
+	}, nil
+}
+
 // Output Printing
 
 var (
-	defaultTemplateCols = []string{"TemplateId", "Name", "Location", "CpuFamily", "AvailabilityZone", "State"}
+	defaultTemplateCols = []string{"TemplateId", "Name", "Location", "CpuFamily", "AvailabilityZone", "Ram", "State"}
 	allTemplateCols     = []string{"TemplateId", "Name", "Location", "CpuFamily", "AvailabilityZone", "Cores", "Ram", "State"}
 )
 
@@ -262,27 +339,39 @@ func getTemplateCols(flagName string, outErr io.Writer) []string {
 	return autoscalingTemplateCols
 }
 
-func getTemplatesKVMaps(dcs []sdkAutoscaling.Template) []map[string]interface{} {
-	out := make([]map[string]interface{}, 0, len(dcs))
-	for _, dc := range dcs {
-		var dcPrint TemplatePrint
-		if dcid, ok := dc.GetIdOk(); ok && dcid != nil {
-			dcPrint.TemplateId = *dcid
+func getTemplatesKVMaps(templates []sdkAutoscaling.Template) []map[string]interface{} {
+	out := make([]map[string]interface{}, 0, len(templates))
+	for _, template := range templates {
+		var templatePrint TemplatePrint
+		if idOk, ok := template.GetIdOk(); ok && idOk != nil {
+			templatePrint.TemplateId = *idOk
 		}
-		if properties, ok := dc.GetPropertiesOk(); ok && properties != nil {
-			if name, ok := properties.GetNameOk(); ok && name != nil {
-				dcPrint.Name = *name
+		if properties, ok := template.GetPropertiesOk(); ok && properties != nil {
+			if nameOk, ok := properties.GetNameOk(); ok && nameOk != nil {
+				templatePrint.Name = *nameOk
 			}
-			if loc, ok := properties.GetLocationOk(); ok && loc != nil {
-				dcPrint.Location = *loc
+			if locationOk, ok := properties.GetLocationOk(); ok && locationOk != nil {
+				templatePrint.Location = *locationOk
+			}
+			if cpuFamilyOk, ok := properties.GetCpuFamilyOk(); ok && cpuFamilyOk != nil {
+				templatePrint.CpuFamily = string(*cpuFamilyOk)
+			}
+			if availabilityZoneOk, ok := properties.GetAvailabilityZoneOk(); ok && availabilityZoneOk != nil {
+				templatePrint.AvailabilityZone = string(*availabilityZoneOk)
+			}
+			if ramOk, ok := properties.GetRamOk(); ok && ramOk != nil {
+				templatePrint.Ram = fmt.Sprintf("%vMB", *ramOk)
+			}
+			if coresOk, ok := properties.GetCoresOk(); ok && coresOk != nil {
+				templatePrint.Cores = *coresOk
 			}
 		}
-		if metadata, ok := dc.GetMetadataOk(); ok && metadata != nil {
-			if state, ok := metadata.GetStateOk(); ok && state != nil {
-				dcPrint.State = string(*state)
+		if metadataOk, ok := template.GetMetadataOk(); ok && metadataOk != nil {
+			if stateOk, ok := metadataOk.GetStateOk(); ok && stateOk != nil {
+				templatePrint.State = string(*stateOk)
 			}
 		}
-		o := structs.Map(dcPrint)
+		o := structs.Map(templatePrint)
 		out = append(out, o)
 	}
 	return out

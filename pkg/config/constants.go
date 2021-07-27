@@ -40,6 +40,8 @@ const (
 	ArgPasswordShort         = "p"
 	ArgAdmin                 = "admin"
 	ArgName                  = "name"
+	ArgTemplateNics          = "template-nics"
+	ArgTemplateVolume        = "template-volume"
 	ArgNameShort             = "n"
 	ArgS3Bucket              = "s3bucket"
 	ArgApiSubnets            = "api-subnets"
@@ -178,22 +180,21 @@ const (
 
 // Default values
 const (
-	DefaultApiURL              = "https://api.ionos.com"
-	DefaultV5BasePath          = "/cloudapi/v5"
-	DefaultAutoscalingBasePath = "/cloudapi/autoscaling"
-	DefaultConfigFileName      = "/config.json"
-	DefaultOutputFormat        = "text"
-	DefaultWait                = false
-	DefaultPublic              = false
-	DefaultDhcp                = true
-	DefaultTimeoutSeconds      = int(60)
-	K8sTimeoutSeconds          = int(600)
-	DefaultServerCores         = 2
-	DefaultServerRAM           = 256
-	DefaultVolumeSize          = 10
-	DefaultNicLanId            = 1
-	DefaultServerCPUFamily     = "AMD_OPTERON"
-	Username                   = "userdata.name"
-	Password                   = "userdata.password"
-	Token                      = "userdata.token"
+	DefaultApiURL          = "https://api.ionos.com"
+	DefaultV5BasePath      = "/cloudapi/v5"
+	DefaultConfigFileName  = "/config.json"
+	DefaultOutputFormat    = "text"
+	DefaultWait            = false
+	DefaultPublic          = false
+	DefaultDhcp            = true
+	DefaultTimeoutSeconds  = int(60)
+	K8sTimeoutSeconds      = int(600)
+	DefaultServerCores     = 2
+	DefaultServerRAM       = 256
+	DefaultVolumeSize      = 10
+	DefaultNicLanId        = 1
+	DefaultServerCPUFamily = "AMD_OPTERON"
+	Username               = "userdata.name"
+	Password               = "userdata.password"
+	Token                  = "userdata.token"
 )

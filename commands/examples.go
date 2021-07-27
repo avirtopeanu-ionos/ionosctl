@@ -270,4 +270,28 @@ ionosctl label add --resource-type datacenter --datacenter-id DATACENTER_ID --la
 	getCdromServerExample    = `ionosctl server cdrom get --datacenter-id DATACENTER_ID --server-id SERVER_ID --cdrom-id CDROM_ID`
 	attachCdromServerExample = `ionosctl server cdrom attach --datacenter-id DATACENTER_ID --server-id SERVER_ID --cdrom-id CDROM_ID --wait-for-request`
 	detachCdromServerExample = `ionosctl server cdrom detach --datacenter-id DATACENTER_ID --server-id SERVER_ID --cdrom-id CDROM_ID --wait-for-request --force`
+
+	/*
+		Autoscaling Examples
+	*/
+
+	/*
+		Autoscaling Template Example
+	*/
+	listTemplateAutoscalingExample   = `ionosctl autoscaling template list`
+	getTemplateAutoscalingExample    = `ionosctl autoscaling template get -i TEMPLATE_ID`
+	createTemplateAutoscalingExample = `ionosctl autoscaling template create
+
+ionosctl autoscaling template create --image-id IMAGE_ID`
+	deleteTemplateAutoscalingExample = `ionosctl autoscaling template delete -i TEMPLATE_ID`
+
+	/*
+		Autoscaling Volume Template Example
+	*/
+	listVolumeTemplateAutoscalingExample = `ionosctl autoscaling volume-template list --template-id TEMPLATE_ID`
+
+	/*
+		Autoscaling NIC Template Example
+	*/
+	listNicTemplateAutoscalingExample = `ionosctl autoscaling nic-template list --template-id TEMPLATE_ID`
 )
