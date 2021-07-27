@@ -22,7 +22,7 @@ type GroupCollection struct {
 	Id *string `json:"id,omitempty"`
 	// Type of resource
 	Type *string `json:"type,omitempty"`
-	Items *[]Resource `json:"items,omitempty"`
+	Items *[]Group `json:"items,omitempty"`
 }
 
 
@@ -157,8 +157,8 @@ func (o *GroupCollection) HasType() bool {
 
 
 // GetItems returns the Items field value
-// If the value is explicit nil, the zero value for []Resource will be returned
-func (o *GroupCollection) GetItems() *[]Resource {
+// If the value is explicit nil, the zero value for []Group will be returned
+func (o *GroupCollection) GetItems() *[]Group {
 	if o == nil {
 		return nil
 	}
@@ -171,7 +171,7 @@ func (o *GroupCollection) GetItems() *[]Resource {
 // GetItemsOk returns a tuple with the Items field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *GroupCollection) GetItemsOk() (*[]Resource, bool) {
+func (o *GroupCollection) GetItemsOk() (*[]Group, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -181,7 +181,7 @@ func (o *GroupCollection) GetItemsOk() (*[]Resource, bool) {
 }
 
 // SetItems sets field value
-func (o *GroupCollection) SetItems(v []Resource) {
+func (o *GroupCollection) SetItems(v []Group) {
 
 
 	o.Items = &v

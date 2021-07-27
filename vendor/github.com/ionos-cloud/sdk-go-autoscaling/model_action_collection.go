@@ -22,7 +22,7 @@ type ActionCollection struct {
 	Id *string `json:"id,omitempty"`
 	// Type of resource
 	Type *string `json:"type,omitempty"`
-	Items *[]Resource `json:"items,omitempty"`
+	Items *[]Action `json:"items,omitempty"`
 }
 
 
@@ -157,8 +157,8 @@ func (o *ActionCollection) HasType() bool {
 
 
 // GetItems returns the Items field value
-// If the value is explicit nil, the zero value for []Resource will be returned
-func (o *ActionCollection) GetItems() *[]Resource {
+// If the value is explicit nil, the zero value for []Action will be returned
+func (o *ActionCollection) GetItems() *[]Action {
 	if o == nil {
 		return nil
 	}
@@ -171,7 +171,7 @@ func (o *ActionCollection) GetItems() *[]Resource {
 // GetItemsOk returns a tuple with the Items field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ActionCollection) GetItemsOk() (*[]Resource, bool) {
+func (o *ActionCollection) GetItemsOk() (*[]Action, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -181,7 +181,7 @@ func (o *ActionCollection) GetItemsOk() (*[]Resource, bool) {
 }
 
 // SetItems sets field value
-func (o *ActionCollection) SetItems(v []Resource) {
+func (o *ActionCollection) SetItems(v []Action) {
 
 
 	o.Items = &v

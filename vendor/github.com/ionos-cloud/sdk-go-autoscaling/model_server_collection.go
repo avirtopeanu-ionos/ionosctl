@@ -22,7 +22,7 @@ type ServerCollection struct {
 	Id *string `json:"id,omitempty"`
 	// Type of resource
 	Type *string `json:"type,omitempty"`
-	Items *[]Resource `json:"items,omitempty"`
+	Items *[]Server `json:"items,omitempty"`
 }
 
 
@@ -157,8 +157,8 @@ func (o *ServerCollection) HasType() bool {
 
 
 // GetItems returns the Items field value
-// If the value is explicit nil, the zero value for []Resource will be returned
-func (o *ServerCollection) GetItems() *[]Resource {
+// If the value is explicit nil, the zero value for []Server will be returned
+func (o *ServerCollection) GetItems() *[]Server {
 	if o == nil {
 		return nil
 	}
@@ -171,7 +171,7 @@ func (o *ServerCollection) GetItems() *[]Resource {
 // GetItemsOk returns a tuple with the Items field value
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *ServerCollection) GetItemsOk() (*[]Resource, bool) {
+func (o *ServerCollection) GetItemsOk() (*[]Server, bool) {
 	if o == nil {
 		return nil, false
 	}
@@ -181,7 +181,7 @@ func (o *ServerCollection) GetItemsOk() (*[]Resource, bool) {
 }
 
 // SetItems sets field value
-func (o *ServerCollection) SetItems(v []Resource) {
+func (o *ServerCollection) SetItems(v []Server) {
 
 
 	o.Items = &v
