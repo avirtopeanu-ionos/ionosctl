@@ -278,20 +278,20 @@ ionosctl label add --resource-type datacenter --datacenter-id DATACENTER_ID --la
 	/*
 		Autoscaling Template Example
 	*/
-	listTemplateAutoscalingExample   = `ionosctl autoscaling template list`
-	getTemplateAutoscalingExample    = `ionosctl autoscaling template get -i TEMPLATE_ID`
-	createTemplateAutoscalingExample = `ionosctl autoscaling template create
+	listTemplateAutoscalingExample   = `ionosctl autoscaling testAutoscalingTemplateGet list`
+	getTemplateAutoscalingExample    = `ionosctl autoscaling testAutoscalingTemplateGet get -i TEMPLATE_ID`
+	createTemplateAutoscalingExample = `ionosctl autoscaling testAutoscalingTemplateGet create
 
-ionosctl autoscaling template create --image-id IMAGE_ID`
-	deleteTemplateAutoscalingExample = `ionosctl autoscaling template delete -i TEMPLATE_ID`
+ionosctl autoscaling testAutoscalingTemplateGet create --image-id IMAGE_ID`
+	deleteTemplateAutoscalingExample = `ionosctl autoscaling testAutoscalingTemplateGet delete -i TEMPLATE_ID`
 
 	/*
 		Autoscaling Volume Template Example
 	*/
-	listVolumeTemplateAutoscalingExample = `ionosctl autoscaling volume-template list --template-id TEMPLATE_ID`
+	listVolumeTemplateAutoscalingExample = `ionosctl autoscaling volume-testAutoscalingTemplateGet list --testAutoscalingTemplateGet-id TEMPLATE_ID`
 
 	/*
 		Autoscaling NIC Template Example
 	*/
-	listNicTemplateAutoscalingExample = `ionosctl autoscaling nic-template list --template-id TEMPLATE_ID`
+	listNicTemplateAutoscalingExample = `ionosctl autoscaling nic-testAutoscalingTemplateGet list --testAutoscalingTemplateGet-id TEMPLATE_ID`
 )

@@ -22,10 +22,10 @@ func autoscalingNicTemplate() *core.Command {
 	ctx := context.TODO()
 	autoscalingNicTemplateCmd := &core.Command{
 		Command: &cobra.Command{
-			Use:              "nic-template",
+			Use:              "nic-testAutoscalingTemplateGet",
 			Aliases:          []string{"n"},
 			Short:            "Autoscaling NIC Template Operations",
-			Long:             "The sub-command of `ionosctl autoscaling nic-template` allows you to list NIC Templates from an Autoscaling Template.",
+			Long:             "The sub-command of `ionosctl autoscaling nic-testAutoscalingTemplateGet` allows you to list NIC Templates from an Autoscaling Template.",
 			TraverseChildren: true,
 		},
 	}
@@ -41,7 +41,7 @@ func autoscalingNicTemplate() *core.Command {
 	*/
 	list := core.NewCommand(ctx, autoscalingNicTemplateCmd, core.CommandBuilder{
 		Namespace:  "autoscaling",
-		Resource:   "nic-template",
+		Resource:   "nic-testAutoscalingTemplateGet",
 		Verb:       "list",
 		Aliases:    []string{"l", "ls"},
 		ShortDesc:  "List NIC Templates from an Autoscaling Template",
@@ -53,7 +53,7 @@ func autoscalingNicTemplate() *core.Command {
 	})
 	list.AddStringFlag(config.ArgTemplateId, config.ArgIdShort, "", config.RequiredFlagTemplateId)
 	_ = list.Command.RegisterFlagCompletionFunc(config.ArgTemplateId, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-		return getTemplatesIds(os.Stderr), cobra.ShellCompDirectiveNoFileComp
+		return getAutoscalingTemplatesIds(os.Stderr), cobra.ShellCompDirectiveNoFileComp
 	})
 
 	return autoscalingNicTemplateCmd
@@ -66,12 +66,12 @@ func RunAutoscalingNicTemplateList(c *core.CommandConfig) error {
 	}
 	if propertiesOk, ok := autoscalingTpl.GetPropertiesOk(); ok && propertiesOk != nil {
 		if nicsOk, ok := propertiesOk.GetNicsOk(); ok && nicsOk != nil {
-			return c.Printer.Print(getNicTemplatePrint(nil, c, getAutoscalingNicTemplates(nicsOk)))
+			return c.Printer.Print(getAutoscalingNicTemplatePrint(c, getAutoscalingNicTemplates(nicsOk)))
 		} else {
-			return errors.New("error getting NICs from autoscaling template")
+			return errors.New("error getting NICs from autoscaling testAutoscalingTemplateGet")
 		}
 	} else {
-		return errors.New("error getting properties from autoscaling template")
+		return errors.New("error getting properties from autoscaling testAutoscalingTemplateGet")
 	}
 }
 
@@ -94,24 +94,19 @@ type NicTemplatePrint struct {
 	Name  string `json:"Name,omitempty"`
 }
 
-func getNicTemplatePrint(resp *sdkAutoscaling.Response, c *core.CommandConfig, dcs []sdkAutoscaling.TemplateNic) printer.Result {
+func getAutoscalingNicTemplatePrint(c *core.CommandConfig, dcs []sdkAutoscaling.TemplateNic) printer.Result {
 	r := printer.Result{}
 	if c != nil {
-		if resp != nil {
-			r.Resource = c.Resource
-			r.Verb = c.Verb
-			r.WaitForRequest = viper.GetBool(core.GetFlagName(c.NS, config.ArgWaitForRequest))
-		}
 		if dcs != nil {
 			r.OutputJSON = dcs
-			r.KeyValue = getNicTemplatesKVMaps(dcs)
-			r.Columns = getNicTemplateCols(core.GetGlobalFlagName(c.Resource, config.ArgCols), c.Printer.GetStderr())
+			r.KeyValue = getAutoscalingNicTemplatesKVMaps(dcs)
+			r.Columns = getAutoscalingNicTemplateCols(core.GetGlobalFlagName(c.Resource, config.ArgCols), c.Printer.GetStderr())
 		}
 	}
 	return r
 }
 
-func getNicTemplateCols(flagName string, outErr io.Writer) []string {
+func getAutoscalingNicTemplateCols(flagName string, outErr io.Writer) []string {
 	var cols []string
 	if viper.IsSet(flagName) {
 		cols = viper.GetStringSlice(flagName)
@@ -134,7 +129,7 @@ func getNicTemplateCols(flagName string, outErr io.Writer) []string {
 	return autoscalingNicTemplateCols
 }
 
-func getNicTemplatesKVMaps(templates []sdkAutoscaling.TemplateNic) []map[string]interface{} {
+func getAutoscalingNicTemplatesKVMaps(templates []sdkAutoscaling.TemplateNic) []map[string]interface{} {
 	out := make([]map[string]interface{}, 0, len(templates))
 	for _, template := range templates {
 		var templatePrint NicTemplatePrint

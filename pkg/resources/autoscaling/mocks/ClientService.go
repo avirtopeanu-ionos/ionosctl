@@ -5,10 +5,10 @@
 package mock_autoscaling
 
 import (
-	autoscaling2 "github.com/ionos-cloud/ionosctl/pkg/resources/autoscaling"
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
+	autoscaling "github.com/ionos-cloud/ionosctl/pkg/resources/autoscaling"
 )
 
 // MockClientService is a mock of ClientService interface.
@@ -35,10 +35,10 @@ func (m *MockClientService) EXPECT() *MockClientServiceMockRecorder {
 }
 
 // Get mocks base method.
-func (m *MockClientService) Get() *autoscaling2.Client {
+func (m *MockClientService) Get() *autoscaling.Client {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Get")
-	ret0, _ := ret[0].(*autoscaling2.Client)
+	ret0, _ := ret[0].(*autoscaling.Client)
 	return ret0
 }
 
@@ -49,10 +49,10 @@ func (mr *MockClientServiceMockRecorder) Get() *gomock.Call {
 }
 
 // GetConfig mocks base method.
-func (m *MockClientService) GetConfig() *autoscaling2.ClientConfig {
+func (m *MockClientService) GetConfig() *autoscaling.ClientConfig {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetConfig")
-	ret0, _ := ret[0].(*autoscaling2.ClientConfig)
+	ret0, _ := ret[0].(*autoscaling.ClientConfig)
 	return ret0
 }
 

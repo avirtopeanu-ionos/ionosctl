@@ -5,10 +5,10 @@
 package mock_autoscaling
 
 import (
-	autoscaling2 "github.com/ionos-cloud/ionosctl/pkg/resources/autoscaling"
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
+	autoscaling "github.com/ionos-cloud/ionosctl/pkg/resources/autoscaling"
 )
 
 // MockTemplatesService is a mock of TemplatesService interface.
@@ -35,11 +35,11 @@ func (m *MockTemplatesService) EXPECT() *MockTemplatesServiceMockRecorder {
 }
 
 // Create mocks base method.
-func (m *MockTemplatesService) Create(input autoscaling2.Template) (*autoscaling2.Template, *autoscaling2.Response, error) {
+func (m *MockTemplatesService) Create(input autoscaling.Template) (*autoscaling.Template, *autoscaling.Response, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Create", input)
-	ret0, _ := ret[0].(*autoscaling2.Template)
-	ret1, _ := ret[1].(*autoscaling2.Response)
+	ret0, _ := ret[0].(*autoscaling.Template)
+	ret1, _ := ret[1].(*autoscaling.Response)
 	ret2, _ := ret[2].(error)
 	return ret0, ret1, ret2
 }
@@ -51,10 +51,10 @@ func (mr *MockTemplatesServiceMockRecorder) Create(input interface{}) *gomock.Ca
 }
 
 // Delete mocks base method.
-func (m *MockTemplatesService) Delete(TemplateId string) (*autoscaling2.Response, error) {
+func (m *MockTemplatesService) Delete(TemplateId string) (*autoscaling.Response, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Delete", TemplateId)
-	ret0, _ := ret[0].(*autoscaling2.Response)
+	ret0, _ := ret[0].(*autoscaling.Response)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -66,11 +66,11 @@ func (mr *MockTemplatesServiceMockRecorder) Delete(TemplateId interface{}) *gomo
 }
 
 // Get mocks base method.
-func (m *MockTemplatesService) Get(TemplateId string) (*autoscaling2.Template, *autoscaling2.Response, error) {
+func (m *MockTemplatesService) Get(TemplateId string) (*autoscaling.Template, *autoscaling.Response, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Get", TemplateId)
-	ret0, _ := ret[0].(*autoscaling2.Template)
-	ret1, _ := ret[1].(*autoscaling2.Response)
+	ret0, _ := ret[0].(*autoscaling.Template)
+	ret1, _ := ret[1].(*autoscaling.Response)
 	ret2, _ := ret[2].(error)
 	return ret0, ret1, ret2
 }
@@ -82,11 +82,11 @@ func (mr *MockTemplatesServiceMockRecorder) Get(TemplateId interface{}) *gomock.
 }
 
 // List mocks base method.
-func (m *MockTemplatesService) List() (autoscaling2.Templates, *autoscaling2.Response, error) {
+func (m *MockTemplatesService) List() (autoscaling.Templates, *autoscaling.Response, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "List")
-	ret0, _ := ret[0].(autoscaling2.Templates)
-	ret1, _ := ret[1].(*autoscaling2.Response)
+	ret0, _ := ret[0].(autoscaling.Templates)
+	ret1, _ := ret[1].(*autoscaling.Response)
 	ret2, _ := ret[2].(error)
 	return ret0, ret1, ret2
 }

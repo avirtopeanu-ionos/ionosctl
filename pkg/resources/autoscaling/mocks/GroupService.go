@@ -5,10 +5,10 @@
 package mock_autoscaling
 
 import (
-	autoscaling2 "github.com/ionos-cloud/ionosctl/pkg/resources/autoscaling"
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
+	autoscaling "github.com/ionos-cloud/ionosctl/pkg/resources/autoscaling"
 )
 
 // MockGroupsService is a mock of GroupsService interface.
@@ -35,11 +35,11 @@ func (m *MockGroupsService) EXPECT() *MockGroupsServiceMockRecorder {
 }
 
 // Create mocks base method.
-func (m *MockGroupsService) Create(input autoscaling2.Group) (*autoscaling2.Group, *autoscaling2.Response, error) {
+func (m *MockGroupsService) Create(input autoscaling.Group) (*autoscaling.Group, *autoscaling.Response, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Create", input)
-	ret0, _ := ret[0].(*autoscaling2.Group)
-	ret1, _ := ret[1].(*autoscaling2.Response)
+	ret0, _ := ret[0].(*autoscaling.Group)
+	ret1, _ := ret[1].(*autoscaling.Response)
 	ret2, _ := ret[2].(error)
 	return ret0, ret1, ret2
 }
@@ -51,10 +51,10 @@ func (mr *MockGroupsServiceMockRecorder) Create(input interface{}) *gomock.Call 
 }
 
 // Delete mocks base method.
-func (m *MockGroupsService) Delete(GroupId string) (*autoscaling2.Response, error) {
+func (m *MockGroupsService) Delete(GroupId string) (*autoscaling.Response, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Delete", GroupId)
-	ret0, _ := ret[0].(*autoscaling2.Response)
+	ret0, _ := ret[0].(*autoscaling.Response)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -66,11 +66,11 @@ func (mr *MockGroupsServiceMockRecorder) Delete(GroupId interface{}) *gomock.Cal
 }
 
 // Get mocks base method.
-func (m *MockGroupsService) Get(groupId string) (*autoscaling2.Group, *autoscaling2.Response, error) {
+func (m *MockGroupsService) Get(groupId string) (*autoscaling.Group, *autoscaling.Response, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Get", groupId)
-	ret0, _ := ret[0].(*autoscaling2.Group)
-	ret1, _ := ret[1].(*autoscaling2.Response)
+	ret0, _ := ret[0].(*autoscaling.Group)
+	ret1, _ := ret[1].(*autoscaling.Response)
 	ret2, _ := ret[2].(error)
 	return ret0, ret1, ret2
 }
@@ -82,11 +82,11 @@ func (mr *MockGroupsServiceMockRecorder) Get(groupId interface{}) *gomock.Call {
 }
 
 // GetAction mocks base method.
-func (m *MockGroupsService) GetAction(groupId, actionId string) (*autoscaling2.Action, *autoscaling2.Response, error) {
+func (m *MockGroupsService) GetAction(groupId, actionId string) (*autoscaling.Action, *autoscaling.Response, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAction", groupId, actionId)
-	ret0, _ := ret[0].(*autoscaling2.Action)
-	ret1, _ := ret[1].(*autoscaling2.Response)
+	ret0, _ := ret[0].(*autoscaling.Action)
+	ret1, _ := ret[1].(*autoscaling.Response)
 	ret2, _ := ret[2].(error)
 	return ret0, ret1, ret2
 }
@@ -98,11 +98,11 @@ func (mr *MockGroupsServiceMockRecorder) GetAction(groupId, actionId interface{}
 }
 
 // GetServer mocks base method.
-func (m *MockGroupsService) GetServer(groupId, serverId string) (*autoscaling2.Server, *autoscaling2.Response, error) {
+func (m *MockGroupsService) GetServer(groupId, serverId string) (*autoscaling.Server, *autoscaling.Response, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetServer", groupId, serverId)
-	ret0, _ := ret[0].(*autoscaling2.Server)
-	ret1, _ := ret[1].(*autoscaling2.Response)
+	ret0, _ := ret[0].(*autoscaling.Server)
+	ret1, _ := ret[1].(*autoscaling.Response)
 	ret2, _ := ret[2].(error)
 	return ret0, ret1, ret2
 }
@@ -114,11 +114,11 @@ func (mr *MockGroupsServiceMockRecorder) GetServer(groupId, serverId interface{}
 }
 
 // List mocks base method.
-func (m *MockGroupsService) List() (autoscaling2.Groups, *autoscaling2.Response, error) {
+func (m *MockGroupsService) List() (autoscaling.Groups, *autoscaling.Response, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "List")
-	ret0, _ := ret[0].(autoscaling2.Groups)
-	ret1, _ := ret[1].(*autoscaling2.Response)
+	ret0, _ := ret[0].(autoscaling.Groups)
+	ret1, _ := ret[1].(*autoscaling.Response)
 	ret2, _ := ret[2].(error)
 	return ret0, ret1, ret2
 }
@@ -130,11 +130,11 @@ func (mr *MockGroupsServiceMockRecorder) List() *gomock.Call {
 }
 
 // ListActions mocks base method.
-func (m *MockGroupsService) ListActions(groupId string) (autoscaling2.Actions, *autoscaling2.Response, error) {
+func (m *MockGroupsService) ListActions(groupId string) (autoscaling.Actions, *autoscaling.Response, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListActions", groupId)
-	ret0, _ := ret[0].(autoscaling2.Actions)
-	ret1, _ := ret[1].(*autoscaling2.Response)
+	ret0, _ := ret[0].(autoscaling.Actions)
+	ret1, _ := ret[1].(*autoscaling.Response)
 	ret2, _ := ret[2].(error)
 	return ret0, ret1, ret2
 }
@@ -146,11 +146,11 @@ func (mr *MockGroupsServiceMockRecorder) ListActions(groupId interface{}) *gomoc
 }
 
 // ListServers mocks base method.
-func (m *MockGroupsService) ListServers(groupId string) (autoscaling2.Servers, *autoscaling2.Response, error) {
+func (m *MockGroupsService) ListServers(groupId string) (autoscaling.Servers, *autoscaling.Response, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ListServers", groupId)
-	ret0, _ := ret[0].(autoscaling2.Servers)
-	ret1, _ := ret[1].(*autoscaling2.Response)
+	ret0, _ := ret[0].(autoscaling.Servers)
+	ret1, _ := ret[1].(*autoscaling.Response)
 	ret2, _ := ret[2].(error)
 	return ret0, ret1, ret2
 }
@@ -162,11 +162,11 @@ func (mr *MockGroupsServiceMockRecorder) ListServers(groupId interface{}) *gomoc
 }
 
 // Update mocks base method.
-func (m *MockGroupsService) Update(groupId string, input autoscaling2.Group) (*autoscaling2.Group, *autoscaling2.Response, error) {
+func (m *MockGroupsService) Update(groupId string, input autoscaling.Group) (*autoscaling.Group, *autoscaling.Response, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Update", groupId, input)
-	ret0, _ := ret[0].(*autoscaling2.Group)
-	ret1, _ := ret[1].(*autoscaling2.Response)
+	ret0, _ := ret[0].(*autoscaling.Group)
+	ret1, _ := ret[1].(*autoscaling.Response)
 	ret2, _ := ret[2].(error)
 	return ret0, ret1, ret2
 }

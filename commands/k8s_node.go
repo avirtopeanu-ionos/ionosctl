@@ -103,7 +103,7 @@ func k8sNode() *core.Command {
 		ShortDesc: "Recreate a Kubernetes Node",
 		LongDesc: `You can recreate a single Kubernetes Node.
 
-Managed Kubernetes starts a process which based on the NodePool's template creates & configures a new Node, waits for status "ACTIVE", and migrates all the Pods from the faulty Node, deleting it once empty. While this operation occurs, the NodePool will have an extra billable "ACTIVE" Node.
+Managed Kubernetes starts a process which based on the NodePool's testAutoscalingTemplateGet creates & configures a new Node, waits for status "ACTIVE", and migrates all the Pods from the faulty Node, deleting it once empty. While this operation occurs, the NodePool will have an extra billable "ACTIVE" Node.
 
 Required values to run command:
 

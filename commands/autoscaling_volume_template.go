@@ -23,10 +23,10 @@ func autoscalingVolumeTemplate() *core.Command {
 	ctx := context.TODO()
 	autoscalingVolumeTemplateCmd := &core.Command{
 		Command: &cobra.Command{
-			Use:              "volume-template",
+			Use:              "volume-testAutoscalingTemplateGet",
 			Aliases:          []string{"v"},
 			Short:            "Autoscaling Volume Template Operations",
-			Long:             "The sub-command of `ionosctl autoscaling volume-template` allows you to list Volume Templates from an Autoscaling Template.",
+			Long:             "The sub-command of `ionosctl autoscaling volume-testAutoscalingTemplateGet` allows you to list Volume Templates from an Autoscaling Template.",
 			TraverseChildren: true,
 		},
 	}
@@ -42,7 +42,7 @@ func autoscalingVolumeTemplate() *core.Command {
 	*/
 	list := core.NewCommand(ctx, autoscalingVolumeTemplateCmd, core.CommandBuilder{
 		Namespace:  "autoscaling",
-		Resource:   "volume-template",
+		Resource:   "volume-testAutoscalingTemplateGet",
 		Verb:       "list",
 		Aliases:    []string{"l", "ls"},
 		ShortDesc:  "List Volume Templates from an Autoscaling Template",
@@ -54,7 +54,7 @@ func autoscalingVolumeTemplate() *core.Command {
 	})
 	list.AddStringFlag(config.ArgTemplateId, config.ArgIdShort, "", config.RequiredFlagTemplateId)
 	_ = list.Command.RegisterFlagCompletionFunc(config.ArgTemplateId, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-		return getTemplatesIds(os.Stderr), cobra.ShellCompDirectiveNoFileComp
+		return getAutoscalingTemplatesIds(os.Stderr), cobra.ShellCompDirectiveNoFileComp
 	})
 
 	return autoscalingVolumeTemplateCmd
@@ -67,12 +67,12 @@ func RunAutoscalingVolumeTemplateList(c *core.CommandConfig) error {
 	}
 	if propertiesOk, ok := autoscalingTpl.GetPropertiesOk(); ok && propertiesOk != nil {
 		if volumesOk, ok := propertiesOk.GetVolumesOk(); ok && volumesOk != nil {
-			return c.Printer.Print(getVolumeTemplatePrint(nil, c, getAutoscalingVolumeTemplates(volumesOk)))
+			return c.Printer.Print(getAutoscalingVolumeTemplatePrint(c, getAutoscalingVolumeTemplates(volumesOk)))
 		} else {
-			return errors.New("error getting volumes from autoscaling template")
+			return errors.New("error getting volumes from autoscaling testAutoscalingTemplateGet")
 		}
 	} else {
-		return errors.New("error getting properties from autoscaling template")
+		return errors.New("error getting properties from autoscaling testAutoscalingTemplateGet")
 	}
 }
 
@@ -98,24 +98,19 @@ type VolumeTemplatePrint struct {
 	UserData string `json:"UserData,omitempty"`
 }
 
-func getVolumeTemplatePrint(resp *sdkAutoscaling.Response, c *core.CommandConfig, dcs []sdkAutoscaling.TemplateVolume) printer.Result {
+func getAutoscalingVolumeTemplatePrint(c *core.CommandConfig, dcs []sdkAutoscaling.TemplateVolume) printer.Result {
 	r := printer.Result{}
 	if c != nil {
-		if resp != nil {
-			r.Resource = c.Resource
-			r.Verb = c.Verb
-			r.WaitForRequest = viper.GetBool(core.GetFlagName(c.NS, config.ArgWaitForRequest))
-		}
 		if dcs != nil {
 			r.OutputJSON = dcs
-			r.KeyValue = getVolumeTemplatesKVMaps(dcs)
-			r.Columns = getVolumeTemplateCols(core.GetGlobalFlagName(c.Resource, config.ArgCols), c.Printer.GetStderr())
+			r.KeyValue = getAutoscalingVolumeTemplatesKVMaps(dcs)
+			r.Columns = getAutoscalingVolumeTemplateCols(core.GetGlobalFlagName(c.Resource, config.ArgCols), c.Printer.GetStderr())
 		}
 	}
 	return r
 }
 
-func getVolumeTemplateCols(flagName string, outErr io.Writer) []string {
+func getAutoscalingVolumeTemplateCols(flagName string, outErr io.Writer) []string {
 	var cols []string
 	if viper.IsSet(flagName) {
 		cols = viper.GetStringSlice(flagName)
@@ -141,7 +136,7 @@ func getVolumeTemplateCols(flagName string, outErr io.Writer) []string {
 	return autoscalingVolumeTemplateCols
 }
 
-func getVolumeTemplatesKVMaps(templates []sdkAutoscaling.TemplateVolume) []map[string]interface{} {
+func getAutoscalingVolumeTemplatesKVMaps(templates []sdkAutoscaling.TemplateVolume) []map[string]interface{} {
 	out := make([]map[string]interface{}, 0, len(templates))
 	for _, template := range templates {
 		var templatePrint VolumeTemplatePrint
