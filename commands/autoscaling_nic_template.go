@@ -22,10 +22,10 @@ func autoscalingNicTemplate() *core.Command {
 	ctx := context.TODO()
 	autoscalingNicTemplateCmd := &core.Command{
 		Command: &cobra.Command{
-			Use:              "nic-testAutoscalingTemplateGet",
+			Use:              "nic-template",
 			Aliases:          []string{"n"},
 			Short:            "Autoscaling NIC Template Operations",
-			Long:             "The sub-command of `ionosctl autoscaling nic-testAutoscalingTemplateGet` allows you to list NIC Templates from an Autoscaling Template.",
+			Long:             "The sub-command of `ionosctl autoscaling nic-template` allows you to list NIC Templates from an Autoscaling Template.",
 			TraverseChildren: true,
 		},
 	}
@@ -41,7 +41,7 @@ func autoscalingNicTemplate() *core.Command {
 	*/
 	list := core.NewCommand(ctx, autoscalingNicTemplateCmd, core.CommandBuilder{
 		Namespace:  "autoscaling",
-		Resource:   "nic-testAutoscalingTemplateGet",
+		Resource:   "nic-template",
 		Verb:       "list",
 		Aliases:    []string{"l", "ls"},
 		ShortDesc:  "List NIC Templates from an Autoscaling Template",
@@ -68,10 +68,10 @@ func RunAutoscalingNicTemplateList(c *core.CommandConfig) error {
 		if nicsOk, ok := propertiesOk.GetNicsOk(); ok && nicsOk != nil {
 			return c.Printer.Print(getAutoscalingNicTemplatePrint(c, getAutoscalingNicTemplates(nicsOk)))
 		} else {
-			return errors.New("error getting NICs from autoscaling testAutoscalingTemplateGet")
+			return errors.New("error getting NICs from autoscaling template")
 		}
 	} else {
-		return errors.New("error getting properties from autoscaling testAutoscalingTemplateGet")
+		return errors.New("error getting properties from autoscaling template")
 	}
 }
 

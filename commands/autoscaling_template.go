@@ -24,10 +24,10 @@ func autoscalingTemplate() *core.Command {
 	ctx := context.TODO()
 	autoscalingTemplateCmd := &core.Command{
 		Command: &cobra.Command{
-			Use:              "testAutoscalingTemplateGet",
+			Use:              "template",
 			Aliases:          []string{"t"},
 			Short:            "Autoscaling Template Operations",
-			Long:             "The sub-commands of `ionosctl autoscaling testAutoscalingTemplateGet` allow you to create, list, get, update and delete Autoscaling Templates.",
+			Long:             "The sub-commands of `ionosctl autoscaling template` allow you to create, list, get, update and delete Autoscaling Templates.",
 			TraverseChildren: true,
 		},
 	}
@@ -43,7 +43,7 @@ func autoscalingTemplate() *core.Command {
 	*/
 	core.NewCommand(ctx, autoscalingTemplateCmd, core.CommandBuilder{
 		Namespace:  "autoscaling",
-		Resource:   "testAutoscalingTemplateGet",
+		Resource:   "template",
 		Verb:       "list",
 		Aliases:    []string{"l", "ls"},
 		ShortDesc:  "List Autoscaling Templates",
@@ -59,7 +59,7 @@ func autoscalingTemplate() *core.Command {
 	*/
 	get := core.NewCommand(ctx, autoscalingTemplateCmd, core.CommandBuilder{
 		Namespace:  "autoscaling",
-		Resource:   "testAutoscalingTemplateGet",
+		Resource:   "template",
 		Verb:       "get",
 		Aliases:    []string{"g"},
 		ShortDesc:  "Get an Autoscaling Template",
@@ -79,7 +79,7 @@ func autoscalingTemplate() *core.Command {
 	*/
 	create := core.NewCommand(ctx, autoscalingTemplateCmd, core.CommandBuilder{
 		Namespace: "autoscaling",
-		Resource:  "testAutoscalingTemplateGet",
+		Resource:  "template",
 		Verb:      "create",
 		Aliases:   []string{"c"},
 		ShortDesc: "Create an Autoscaling Template",
@@ -87,9 +87,9 @@ func autoscalingTemplate() *core.Command {
 
 Regarding the Ram size, it must be specified in multiples of 256 MB with a minimum of 256 MB; however, if you set ramHotPlug to TRUE then you must use a minimum of 1024 MB. If you set the RAM size more than 240GB, then ramHotPlug will be set to FALSE and can not be set to TRUE unless RAM size not set to less than 240GB.
 
-Right now, the Autoscaling Template supports only one Template Volume. Important: the volume created will NOT be deleted on SCALE IN type of Autoscaling Actions. If you want to create a Volume Template, you need to provide Image Id. If you want to see the Volume Template properties, use ` + "`" + `ionosctl autoscaling volume-testAutoscalingTemplateGet list` + "`" + ` command.
+Right now, the Autoscaling Template supports only one Template Volume. Important: the volume created will NOT be deleted on SCALE IN type of Autoscaling Actions. If you want to create a Volume Template, you need to provide Image Id. If you want to see the Volume Template properties, use ` + "`" + `ionosctl autoscaling volume-template list` + "`" + ` command.
 
-Also, the Autoscaling Template supports multiple NIC Templates. To create an Autoscaling Template with multiple NIC Templates use ` + "`" + `--lan-ids "LAN_ID1,LAN_ID2"` + "`" + ` and ` + "`" + `--testAutoscalingTemplateGet-nics "NAME1,NAME2"` + "`" + ` options. It is recommended to use both options. If you want to see the NIC Templates properties, use ` + "`" + `ionosctl autoscaling nic-testAutoscalingTemplateGet list` + "`" + ` command.`,
+Also, the Autoscaling Template supports multiple NIC Templates. To create an Autoscaling Template with multiple NIC Templates use ` + "`" + `--lan-ids "LAN_ID1,LAN_ID2"` + "`" + ` and ` + "`" + `--template-nics "NAME1,NAME2"` + "`" + ` options. It is recommended to use both options. If you want to see the NIC Templates properties, use ` + "`" + `ionosctl autoscaling nic-template list` + "`" + ` command.`,
 		Example:    createTemplateAutoscalingExample,
 		PreCmdRun:  noPreRun,
 		CmdRun:     RunAutoscalingTemplateCreate,
@@ -124,7 +124,7 @@ Also, the Autoscaling Template supports multiple NIC Templates. To create an Aut
 	create.AddStringFlag(config.ArgPassword, config.ArgPasswordShort, "abcde1234", "Image password for the Volume Template")
 	create.AddStringFlag(config.ArgUserData, "", "", "User-Data (Cloud Init) for the Volume Template")
 	create.AddStringFlag(config.ArgTemplateVolume, "", "Unnamed Autoscaling Template Volume", "Name of the Volume Template")
-	create.AddStringFlag(config.ArgSize, "", strconv.Itoa(config.DefaultVolumeSize), "User-defined size for this testAutoscalingTemplateGet volume in GB. e.g.: --size 10 or --size 10GB.")
+	create.AddStringFlag(config.ArgSize, "", strconv.Itoa(config.DefaultVolumeSize), "User-defined size for this template volume in GB. e.g.: --size 10 or --size 10GB.")
 	_ = create.Command.RegisterFlagCompletionFunc(config.ArgSize, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		return []string{"10GB", "20GB", "50GB", "100GB", "1TB"}, cobra.ShellCompDirectiveNoFileComp
 	})
@@ -139,7 +139,7 @@ Also, the Autoscaling Template supports multiple NIC Templates. To create an Aut
 	*/
 	deleteCmd := core.NewCommand(ctx, autoscalingTemplateCmd, core.CommandBuilder{
 		Namespace: "autoscaling",
-		Resource:  "testAutoscalingTemplateGet",
+		Resource:  "template",
 		Verb:      "delete",
 		Aliases:   []string{"d"},
 		ShortDesc: "Delete an Autoscaling Template",
@@ -198,7 +198,7 @@ func RunAutoscalingTemplateCreate(c *core.CommandConfig) error {
 }
 
 func RunAutoscalingTemplateDelete(c *core.CommandConfig) error {
-	if err := utils.AskForConfirm(c.Stdin, c.Printer, "delete autoscaling testAutoscalingTemplateGet"); err != nil {
+	if err := utils.AskForConfirm(c.Stdin, c.Printer, "delete autoscaling template"); err != nil {
 		return err
 	}
 	resp, err := c.AutoscalingTemplates().Delete(viper.GetString(core.GetFlagName(c.NS, config.ArgTemplateId)))
@@ -237,7 +237,7 @@ func getNewAutoscalingTemplate(c *core.CommandConfig) (*sdkAutoscaling.TemplateP
 	nicNames := viper.GetStringSlice(core.GetFlagName(c.NS, config.ArgTemplateNics))
 	lanIds := viper.GetIntSlice(core.GetFlagName(c.NS, config.ArgLanIds))
 	if len(nicNames) != len(lanIds) {
-		return nil, errors.New("error creating NIC Templates. Hint: please use the `--lan-ids` and the `--testAutoscalingTemplateGet-nics` options with the same amount of values")
+		return nil, errors.New("error creating NIC Templates. Hint: please use the `--lan-ids` and the `--template-nics` options with the same amount of values")
 	} else {
 		for i := 0; i < len(nicNames); i++ {
 			lanId := int32(lanIds[i])

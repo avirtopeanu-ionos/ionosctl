@@ -23,10 +23,10 @@ func autoscalingVolumeTemplate() *core.Command {
 	ctx := context.TODO()
 	autoscalingVolumeTemplateCmd := &core.Command{
 		Command: &cobra.Command{
-			Use:              "volume-testAutoscalingTemplateGet",
+			Use:              "volume-template",
 			Aliases:          []string{"v"},
 			Short:            "Autoscaling Volume Template Operations",
-			Long:             "The sub-command of `ionosctl autoscaling volume-testAutoscalingTemplateGet` allows you to list Volume Templates from an Autoscaling Template.",
+			Long:             "The sub-command of `ionosctl autoscaling volume-template` allows you to list Volume Templates from an Autoscaling Template.",
 			TraverseChildren: true,
 		},
 	}
@@ -42,7 +42,7 @@ func autoscalingVolumeTemplate() *core.Command {
 	*/
 	list := core.NewCommand(ctx, autoscalingVolumeTemplateCmd, core.CommandBuilder{
 		Namespace:  "autoscaling",
-		Resource:   "volume-testAutoscalingTemplateGet",
+		Resource:   "volume-template",
 		Verb:       "list",
 		Aliases:    []string{"l", "ls"},
 		ShortDesc:  "List Volume Templates from an Autoscaling Template",
@@ -69,10 +69,10 @@ func RunAutoscalingVolumeTemplateList(c *core.CommandConfig) error {
 		if volumesOk, ok := propertiesOk.GetVolumesOk(); ok && volumesOk != nil {
 			return c.Printer.Print(getAutoscalingVolumeTemplatePrint(c, getAutoscalingVolumeTemplates(volumesOk)))
 		} else {
-			return errors.New("error getting volumes from autoscaling testAutoscalingTemplateGet")
+			return errors.New("error getting volumes from autoscaling template")
 		}
 	} else {
-		return errors.New("error getting properties from autoscaling testAutoscalingTemplateGet")
+		return errors.New("error getting properties from autoscaling template")
 	}
 }
 
