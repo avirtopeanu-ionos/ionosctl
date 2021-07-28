@@ -117,8 +117,8 @@ func (gs *groupsService) ListActions(groupId string) (Actions, *Response, error)
 	return Actions{actions}, &Response{*res}, err
 }
 
-func (gs *groupsService) GetAction(groupId, serverId string) (*Action, *Response, error) {
-	req := gs.client.GroupsApi.AutoscalingGroupsActionsFindById(gs.context, groupId, serverId)
+func (gs *groupsService) GetAction(groupId, actionId string) (*Action, *Response, error) {
+	req := gs.client.GroupsApi.AutoscalingGroupsActionsFindById(gs.context, actionId, groupId)
 	action, res, err := gs.client.GroupsApi.AutoscalingGroupsActionsFindByIdExecute(req)
 	return &Action{action}, &Response{*res}, err
 }

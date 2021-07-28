@@ -27,7 +27,7 @@ func autoscalingTemplate() *core.Command {
 			Use:              "template",
 			Aliases:          []string{"t"},
 			Short:            "Autoscaling Template Operations",
-			Long:             "The sub-commands of `ionosctl autoscaling template` allow you to create, list, get, update and delete Autoscaling Templates.",
+			Long:             "The sub-commands of `ionosctl autoscaling template` allow you to create, list, get and delete Autoscaling Templates.",
 			TraverseChildren: true,
 		},
 	}

@@ -19,6 +19,9 @@ func autoscaling() *core.Command {
 	autoscalingCmd.AddCommand(autoscalingTemplate())
 	autoscalingCmd.AddCommand(autoscalingNicTemplate())
 	autoscalingCmd.AddCommand(autoscalingVolumeTemplate())
+	autoscalingCmd.AddCommand(autoscalingGroup())
+	autoscalingCmd.AddCommand(autoscalingAction())
+	autoscalingCmd.AddCommand(autoscalingServer())
 
 	return autoscalingCmd
 }
