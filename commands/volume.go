@@ -130,7 +130,7 @@ Required values to run command:
 	_ = create.Command.RegisterFlagCompletionFunc(config.ArgBackupUnitId, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		return getBackupUnitsIds(os.Stderr), cobra.ShellCompDirectiveNoFileComp
 	})
-	create.AddStringFlag(config.ArgImageId, "", "", "The Image Id or snapshot Id to be used as testAutoscalingTemplateGet for the new Volume")
+	create.AddStringFlag(config.ArgImageId, "", "", "The Image Id or snapshot Id to be used as template for the new Volume")
 	_ = create.Command.RegisterFlagCompletionFunc(config.ArgImageId, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		return getImageIds(os.Stderr), cobra.ShellCompDirectiveNoFileComp
 	})
