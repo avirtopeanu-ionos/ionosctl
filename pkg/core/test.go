@@ -61,6 +61,7 @@ type ResourcesMocks struct {
 	// Autoscaling Resources Mocks
 	AutoscalingClient   *mockautoscaling.MockClientService
 	AutoscalingTemplate *mockautoscaling.MockTemplatesService
+	AutoscalingGroup    *mockautoscaling.MockGroupsService
 }
 
 func CmdConfigTest(t *testing.T, writer io.Writer, runner CmdRunnerTest) {
@@ -110,6 +111,7 @@ func initMockResources(ctrl *gomock.Controller) *ResourcesMocks {
 		// Autoscaling Resources Mocks
 		AutoscalingClient:   mockautoscaling.NewMockClientService(ctrl),
 		AutoscalingTemplate: mockautoscaling.NewMockTemplatesService(ctrl),
+		AutoscalingGroup:    mockautoscaling.NewMockGroupsService(ctrl),
 	}
 }
 
@@ -137,5 +139,6 @@ func initMockServices(c *CommandConfig, tm *ResourcesMocks) *CommandConfig {
 	c.K8s = func() v5.K8sService { return tm.K8s }
 	// Autoscaling Resources Mocks
 	c.AutoscalingTemplates = func() autoscaling.TemplatesService { return tm.AutoscalingTemplate }
+	c.AutoscalingGroups = func() autoscaling.GroupsService { return tm.AutoscalingGroup }
 	return c
 }

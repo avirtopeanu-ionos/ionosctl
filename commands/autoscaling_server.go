@@ -66,7 +66,7 @@ func autoscalingServer() *core.Command {
 		ShortDesc:  "Get a Server from an Autoscaling Group",
 		LongDesc:   "Use this command to retrieve details about an Server from a specific Autoscaling Group by using its ID.\n\nRequired values to run command:\n\n* Autoscaling Group Id\n\n* Server Id",
 		Example:    "",
-		PreCmdRun:  PreRunGroupServerIds,
+		PreCmdRun:  PreRunAutoscalingGroupServerIds,
 		CmdRun:     RunAutoscalingServerGet,
 		InitClient: true,
 	})
@@ -82,7 +82,7 @@ func autoscalingServer() *core.Command {
 	return autoscalingServerCmd
 }
 
-func PreRunGroupServerIds(c *core.PreCommandConfig) error {
+func PreRunAutoscalingGroupServerIds(c *core.PreCommandConfig) error {
 	return core.CheckRequiredFlags(c.NS, config.ArgGroupId, config.ArgServerId)
 }
 

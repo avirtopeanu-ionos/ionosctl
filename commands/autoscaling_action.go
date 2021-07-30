@@ -66,7 +66,7 @@ func autoscalingAction() *core.Command {
 		ShortDesc:  "Get an Action from an Autoscaling Group",
 		LongDesc:   "Use this command to retrieve details about an Action from an Autoscaling Group by using its ID.\n\nRequired values to run command:\n\n* Autoscaling Group Id\n* Action Id",
 		Example:    "",
-		PreCmdRun:  PreRunGroupActionIds,
+		PreCmdRun:  PreRunAutoscalingGroupActionIds,
 		CmdRun:     RunAutoscalingActionGet,
 		InitClient: true,
 	})
@@ -82,7 +82,7 @@ func autoscalingAction() *core.Command {
 	return autoscalingActionCmd
 }
 
-func PreRunGroupActionIds(c *core.PreCommandConfig) error {
+func PreRunAutoscalingGroupActionIds(c *core.PreCommandConfig) error {
 	return core.CheckRequiredFlags(c.NS, config.ArgGroupId, config.ArgActionId)
 }
 

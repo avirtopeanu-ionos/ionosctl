@@ -391,29 +391,29 @@ func getUpdateAutoscalingGroup(c *core.CommandConfig, autoGroup *sdkAutoscaling.
 			// Set Group Action Policy
 			// SCALE IN Action
 			if scaleInActionOk, ok := policyOk.GetScaleInActionOk(); ok && scaleInActionOk != nil {
-				if viper.IsSet(core.GetFlagName(c.NS, config.ArgScaleOutThreshold)) {
+				if viper.IsSet(core.GetFlagName(c.NS, config.ArgScaleInAmount)) {
 					scaleInActionOk.SetAmount(float32(viper.GetFloat64(core.GetFlagName(c.NS, config.ArgScaleInAmount))))
 				}
-				if viper.IsSet(core.GetFlagName(c.NS, config.ArgScaleOutThreshold)) {
+				if viper.IsSet(core.GetFlagName(c.NS, config.ArgScaleInAmountType)) {
 					scaleInActionOk.SetAmountType(ionoscloudAutoscaling.ActionAmount(viper.GetString(core.GetFlagName(c.NS, config.ArgScaleInAmountType))))
 				}
-				if viper.IsSet(core.GetFlagName(c.NS, config.ArgScaleOutThreshold)) {
+				if viper.IsSet(core.GetFlagName(c.NS, config.ArgScaleInCoolDownPeriod)) {
 					scaleInActionOk.SetCooldownPeriod(viper.GetString(core.GetFlagName(c.NS, config.ArgScaleInCoolDownPeriod)))
 				}
 				policyOk.SetScaleInAction(*scaleInActionOk)
 			}
 			// SCALE OUT Action
 			if scaleOutActionOk, ok := policyOk.GetScaleOutActionOk(); ok && scaleOutActionOk != nil {
-				if viper.IsSet(core.GetFlagName(c.NS, config.ArgScaleOutThreshold)) {
-					scaleOutActionOk.SetAmount(float32(viper.GetFloat64(core.GetFlagName(c.NS, config.ArgScaleInAmount))))
+				if viper.IsSet(core.GetFlagName(c.NS, config.ArgScaleOutAmount)) {
+					scaleOutActionOk.SetAmount(float32(viper.GetFloat64(core.GetFlagName(c.NS, config.ArgScaleOutAmount))))
 				}
-				if viper.IsSet(core.GetFlagName(c.NS, config.ArgScaleOutThreshold)) {
-					scaleOutActionOk.SetAmountType(ionoscloudAutoscaling.ActionAmount(viper.GetString(core.GetFlagName(c.NS, config.ArgScaleInAmountType))))
+				if viper.IsSet(core.GetFlagName(c.NS, config.ArgScaleOutAmountType)) {
+					scaleOutActionOk.SetAmountType(ionoscloudAutoscaling.ActionAmount(viper.GetString(core.GetFlagName(c.NS, config.ArgScaleOutAmountType))))
 				}
-				if viper.IsSet(core.GetFlagName(c.NS, config.ArgScaleOutThreshold)) {
-					scaleOutActionOk.SetCooldownPeriod(viper.GetString(core.GetFlagName(c.NS, config.ArgScaleInCoolDownPeriod)))
+				if viper.IsSet(core.GetFlagName(c.NS, config.ArgScaleOutCoolDownPeriod)) {
+					scaleOutActionOk.SetCooldownPeriod(viper.GetString(core.GetFlagName(c.NS, config.ArgScaleOutCoolDownPeriod)))
 				}
-				policyOk.SetScaleInAction(*scaleOutActionOk)
+				policyOk.SetScaleOutAction(*scaleOutActionOk)
 			}
 
 			// Set Group Policy (required)

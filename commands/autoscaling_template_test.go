@@ -66,12 +66,12 @@ var (
 			Items: &[]ionoscloudautoscaling.Template{testAutoscalingTemplateGet.Template, testAutoscalingTemplateGet.Template},
 		},
 	}
-	testAutoscalingTemplateVar           = "test-autoscaling testAutoscalingTemplateGet"
+	testAutoscalingTemplateVar           = "test-autoscaling template"
 	testAutoscalingTemplateIntVar        = int32(1)
 	testAutoscalingTemplateSizeStringVar = strconv.Itoa(int(testAutoscalingTemplateSizeIntVar))
 	testAutoscalingTemplateSizeIntVar    = int32(256)
 	testAutoscalingStateTestVar          = ionoscloudautoscaling.MetadataState("ACTIVE")
-	testAutoscalingTemplateErr           = errors.New("autoscaling testAutoscalingTemplateGet test error occurred")
+	testAutoscalingTemplateErr           = errors.New("autoscaling template test error occurred")
 )
 
 func TestPreRunAutoscalingTemplateId(t *testing.T) {
@@ -285,8 +285,8 @@ func TestGetAutoscalingTemplatesCols(t *testing.T) {
 	var b bytes.Buffer
 	clierror.ErrAction = func() { return }
 	w := bufio.NewWriter(&b)
-	viper.Set(core.GetGlobalFlagName("autoscaling testAutoscalingTemplateGet", config.ArgCols), []string{"Name"})
-	getAutoscalingTemplateCols(core.GetGlobalFlagName("autoscaling testAutoscalingTemplateGet", config.ArgCols), w)
+	viper.Set(core.GetGlobalFlagName("autoscaling template", config.ArgCols), []string{"Name"})
+	getAutoscalingTemplateCols(core.GetGlobalFlagName("autoscaling template", config.ArgCols), w)
 	err := w.Flush()
 	assert.NoError(t, err)
 }
@@ -296,8 +296,8 @@ func TestGetAutoscalingTemplatesColsErr(t *testing.T) {
 	var b bytes.Buffer
 	clierror.ErrAction = func() { return }
 	w := bufio.NewWriter(&b)
-	viper.Set(core.GetGlobalFlagName("autoscaling testAutoscalingTemplateGet", config.ArgCols), []string{"Unknown"})
-	getAutoscalingTemplateCols(core.GetGlobalFlagName("autoscaling testAutoscalingTemplateGet", config.ArgCols), w)
+	viper.Set(core.GetGlobalFlagName("autoscaling template", config.ArgCols), []string{"Unknown"})
+	getAutoscalingTemplateCols(core.GetGlobalFlagName("autoscaling template", config.ArgCols), w)
 	err := w.Flush()
 	assert.NoError(t, err)
 	re := regexp.MustCompile(`unknown column Unknown`)
