@@ -105,7 +105,7 @@ Also, the Autoscaling Template supports multiple NIC Templates. To create an Aut
 		return []string{"AUTO", "ZONE_1", "ZONE_2"}, cobra.ShellCompDirectiveNoFileComp
 	})
 	create.AddIntFlag(config.ArgCores, "", 1, "The total number of cores for the VMs. Minimum: 1")
-	create.AddStringFlag(config.ArgRam, "", "2048", "The amount of memory for the VMs. Size must be specified in multiples of 256. e.g. --ram 2048 or --ram 2048MB")
+	create.AddStringFlag(config.ArgRam, "", "1024", "The amount of memory for the VMs. Size must be specified in multiples of 256. e.g. --ram 2048 or --ram 2048MB")
 	_ = create.Command.RegisterFlagCompletionFunc(config.ArgRam, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		return []string{"256MB", "512MB", "1024MB", "2048MB", "2GB", "3GB", "4GB", "5GB", "10GB", "16GB"}, cobra.ShellCompDirectiveNoFileComp
 	})

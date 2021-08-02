@@ -97,7 +97,7 @@ Required values to run command:
 * Autoscaling Template Id
 * Datacenter Id`,
 		Example:    createGroupAutoscalingExample,
-		PreCmdRun:  PreRunDataCenterId,
+		PreCmdRun:  PreRunDatacenterAutoscalingTemplateIds,
 		CmdRun:     RunAutoscalingGroupCreate,
 		InitClient: true,
 	})
@@ -222,6 +222,10 @@ Required values to run command:
 	})
 
 	return autoscalingGroupCmd
+}
+
+func PreRunDatacenterAutoscalingTemplateIds(c *core.PreCommandConfig) error {
+	return core.CheckRequiredFlags(c.NS, config.ArgDataCenterId, config.ArgTemplateId)
 }
 
 func PreRunAutoscalingGroupId(c *core.PreCommandConfig) error {
