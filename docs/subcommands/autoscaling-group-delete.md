@@ -42,8 +42,6 @@ Required values to run command:
 
 ```text
   -u, --api-url string    Override default host url (default "https://api.ionos.com")
-      --cols strings      Set of columns to be printed on output 
-                          Available columns: [GroupId Name DatacenterId Location TemplateId MaxReplicaCount MinReplicaCount TargetReplicaCount Metric Range Unit ScaleInThreshold ScaleInAmount ScaleInAmountType ScaleInCoolDownPeriod ScaleOutThreshold ScaleOutAmount ScaleOutAmountType ScaleOutCoolDownPeriod State] (default [GroupId,Name,DatacenterId,Location,TemplateId,TargetReplicaCount,State])
   -c, --config string     Configuration file used for authentication (default "$XDG_CONFIG_HOME/ionosctl/config.json")
   -f, --force             Force command to execute without user input
   -i, --group-id string   The unique Group Id (required)
@@ -55,6 +53,6 @@ Required values to run command:
 ## Examples
 
 ```text
-ionosctl autoscaling group delete -i TEMPLATE_ID
+ionosctl autoscaling group delete -i GROUP_ID
 ```
 

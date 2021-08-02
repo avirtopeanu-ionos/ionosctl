@@ -52,3 +52,9 @@ Required values to run command:
   -q, --quiet             Quiet output
 ```
 
+## Examples
+
+```text
+ionosctl autoscaling action list --group-id GROUP_ID
+```
+

@@ -299,8 +299,20 @@ ionosctl autoscaling template create --image-id IMAGE_ID`
 		Autoscaling Group Example
 	*/
 	listGroupAutoscalingExample   = `ionosctl autoscaling group list`
-	getGroupAutoscalingExample    = `ionosctl autoscaling group get -i TEMPLATE_ID`
-	createGroupAutoscalingExample = `ionosctl autoscaling group create`
-	updateGroupAutoscalingExample = `ionosctl autoscaling group create`
-	deleteGroupAutoscalingExample = `ionosctl autoscaling group delete -i TEMPLATE_ID`
+	getGroupAutoscalingExample    = `ionosctl autoscaling group get -i GROUP_ID`
+	createGroupAutoscalingExample = `ionosctl autoscaling group create --datacenter-id DATACENTER_ID --template-id TEMPLATE_ID`
+	updateGroupAutoscalingExample = `ionosctl autoscaling group update -i GROUP_ID --name GROUP_NAME`
+	deleteGroupAutoscalingExample = `ionosctl autoscaling group delete -i GROUP_ID`
+
+	/*
+		Autoscaling Server Example
+	*/
+	listServerAutoscalingExample = `ionosctl autoscaling server list --group-id GROUP_ID`
+	getServerAutoscalingExample  = `ionosctl autoscaling server get --group-id GROUP_ID --server-id SERVER_ID`
+
+	/*
+		Autoscaling Action Example
+	*/
+	listActionAutoscalingExample = `ionosctl autoscaling action list --group-id GROUP_ID`
+	getActionAutoscalingExample  = `ionosctl autoscaling action get --group-id GROUP_ID --action-id ACTION_ID -W`
 )

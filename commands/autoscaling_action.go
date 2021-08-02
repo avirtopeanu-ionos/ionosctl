@@ -45,7 +45,7 @@ func autoscalingAction() *core.Command {
 		Aliases:    []string{"l", "ls"},
 		ShortDesc:  "List Actions from an Autoscaling Group",
 		LongDesc:   "Use this command to retrieve a complete list of Actions from an Autoscaling Group provisioned under your account.\n\nRequired values to run command:\n\n* Autoscaling Group Id",
-		Example:    "",
+		Example:    listActionAutoscalingExample,
 		PreCmdRun:  PreRunGroupId,
 		CmdRun:     RunAutoscalingActionList,
 		InitClient: true,
@@ -64,8 +64,8 @@ func autoscalingAction() *core.Command {
 		Verb:       "get",
 		Aliases:    []string{"g"},
 		ShortDesc:  "Get an Action from an Autoscaling Group",
-		LongDesc:   "Use this command to retrieve details about an Action from an Autoscaling Group by using its ID.\n\nRequired values to run command:\n\n* Autoscaling Group Id\n* Action Id",
-		Example:    "",
+		LongDesc:   "Use this command to retrieve details about an Action from an Autoscaling Group by using its ID. You can wait for the Action to be in Successful state using `--wait-for-state` or `-W` option.\n\nRequired values to run command:\n\n* Autoscaling Group Id\n* Action Id",
+		Example:    getActionAutoscalingExample,
 		PreCmdRun:  PreRunAutoscalingGroupActionIds,
 		CmdRun:     RunAutoscalingActionGet,
 		InitClient: true,
@@ -78,31 +78,8 @@ func autoscalingAction() *core.Command {
 	_ = get.Command.RegisterFlagCompletionFunc(config.ArgActionId, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		return getAutoscalingActionsIds(os.Stderr, viper.GetString(core.GetFlagName(get.NS, config.ArgGroupId))), cobra.ShellCompDirectiveNoFileComp
 	})
-
-	/*
-		Wait Command
-	*/
-	wait := core.NewCommand(ctx, autoscalingActionCmd, core.CommandBuilder{
-		Namespace:  "autoscaling",
-		Resource:   "action",
-		Verb:       "wait",
-		Aliases:    []string{"w"},
-		ShortDesc:  "Wait for an Action in an Autoscaling Group",
-		LongDesc:   "Use this command to wait for an Action in an Autoscaling Group to be Successful.\n\nRequired values to run command:\n\n* Autoscaling Group Id\n* Action Id",
-		Example:    "",
-		PreCmdRun:  PreRunAutoscalingGroupActionIds,
-		CmdRun:     RunAutoscalingActionWait,
-		InitClient: true,
-	})
-	wait.AddStringFlag(config.ArgGroupId, "", "", config.RequiredFlagGroupId)
-	_ = wait.Command.RegisterFlagCompletionFunc(config.ArgGroupId, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-		return getAutoscalingGroupsIds(os.Stderr), cobra.ShellCompDirectiveNoFileComp
-	})
-	wait.AddStringFlag(config.ArgActionId, config.ArgIdShort, "", config.RequiredFlagActionId)
-	_ = wait.Command.RegisterFlagCompletionFunc(config.ArgActionId, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-		return getAutoscalingActionsIds(os.Stderr, viper.GetString(core.GetFlagName(get.NS, config.ArgGroupId))), cobra.ShellCompDirectiveNoFileComp
-	})
-	wait.AddIntFlag(config.ArgTimeout, config.ArgTimeoutShort, 600, "Timeout option for waiting for Autoscaling Action to be SUCCESSFUL [seconds]")
+	get.AddBoolFlag(config.ArgWaitForState, config.ArgWaitForStateShort, config.DefaultWait, "Wait for the Autoscaling Action to be SUCCESSFUL")
+	get.AddIntFlag(config.ArgTimeout, config.ArgTimeoutShort, 600, "Timeout option for waiting for Autoscaling Action to be SUCCESSFUL [seconds]")
 
 	return autoscalingActionCmd
 }
@@ -120,16 +97,10 @@ func RunAutoscalingActionList(c *core.CommandConfig) error {
 }
 
 func RunAutoscalingActionGet(c *core.CommandConfig) error {
-	autoAction, _, err := c.AutoscalingGroups().GetAction(viper.GetString(core.GetFlagName(c.NS, config.ArgGroupId)), viper.GetString(core.GetFlagName(c.NS, config.ArgActionId)))
-	if err != nil {
-		return err
-	}
-	return c.Printer.Print(getAutoscalingActionPrint(nil, c, []sdkAutoscaling.Action{*autoAction}))
-}
-
-func RunAutoscalingActionWait(c *core.CommandConfig) error {
-	if err := utils.WaitForState(c, GetStateAutoscalingAction, viper.GetString(core.GetFlagName(c.NS, config.ArgActionId))); err != nil {
-		return err
+	if viper.GetBool(core.GetFlagName(c.NS, config.ArgWaitForState)) {
+		if err := utils.WaitForState(c, GetStateAutoscalingAction, viper.GetString(core.GetFlagName(c.NS, config.ArgActionId))); err != nil {
+			return err
+		}
 	}
 	autoAction, _, err := c.AutoscalingGroups().GetAction(viper.GetString(core.GetFlagName(c.NS, config.ArgGroupId)), viper.GetString(core.GetFlagName(c.NS, config.ArgActionId)))
 	if err != nil {

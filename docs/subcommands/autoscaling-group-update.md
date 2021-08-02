@@ -70,6 +70,6 @@ Required values to run command:
 ## Examples
 
 ```text
-ionosctl autoscaling group create
+ionosctl autoscaling group update -i GROUP_ID --name GROUP_NAME
 ```
 

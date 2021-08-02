@@ -55,3 +55,9 @@ Required values to run command:
   -i, --server-id string   The unique Server Id (required)
 ```
 
+## Examples
+
+```text
+ionosctl autoscaling server get --group-id GROUP_ID --server-id SERVER_ID
+```
+

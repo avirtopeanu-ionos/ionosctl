@@ -29,17 +29,11 @@ func autoscalingGroup() *core.Command {
 			TraverseChildren: true,
 		},
 	}
-	globalFlags := autoscalingGroupCmd.GlobalFlags()
-	globalFlags.StringSliceP(config.ArgCols, "", defaultAutoscalingGroupCols, utils.ColsMessage(allAutoscalingGroupCols))
-	_ = viper.BindPFlag(core.GetGlobalFlagName(autoscalingGroupCmd.Name(), config.ArgCols), globalFlags.Lookup(config.ArgCols))
-	_ = autoscalingGroupCmd.Command.RegisterFlagCompletionFunc(config.ArgCols, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-		return allAutoscalingGroupCols, cobra.ShellCompDirectiveNoFileComp
-	})
 
 	/*
 		List Command
 	*/
-	core.NewCommand(ctx, autoscalingGroupCmd, core.CommandBuilder{
+	list := core.NewCommand(ctx, autoscalingGroupCmd, core.CommandBuilder{
 		Namespace:  "autoscaling",
 		Resource:   "group",
 		Verb:       "list",
@@ -50,6 +44,10 @@ func autoscalingGroup() *core.Command {
 		PreCmdRun:  noPreRun,
 		CmdRun:     RunAutoscalingGroupList,
 		InitClient: true,
+	})
+	list.AddStringSliceFlag(config.ArgCols, "", defaultAutoscalingGroupCols, utils.ColsMessage(allAutoscalingGroupCols))
+	_ = list.Command.RegisterFlagCompletionFunc(config.ArgCols, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		return allAutoscalingGroupCols, cobra.ShellCompDirectiveNoFileComp
 	})
 
 	/*
@@ -70,6 +68,10 @@ func autoscalingGroup() *core.Command {
 	get.AddStringFlag(config.ArgGroupId, config.ArgIdShort, "", config.RequiredFlagGroupId)
 	_ = get.Command.RegisterFlagCompletionFunc(config.ArgGroupId, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		return getAutoscalingGroupsIds(os.Stderr), cobra.ShellCompDirectiveNoFileComp
+	})
+	get.AddStringSliceFlag(config.ArgCols, "", defaultAutoscalingGroupCols, utils.ColsMessage(allAutoscalingGroupCols))
+	_ = get.Command.RegisterFlagCompletionFunc(config.ArgCols, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		return allAutoscalingGroupCols, cobra.ShellCompDirectiveNoFileComp
 	})
 
 	/*
@@ -100,6 +102,10 @@ Required values to run command:
 		PreCmdRun:  PreRunDatacenterAutoscalingTemplateIds,
 		CmdRun:     RunAutoscalingGroupCreate,
 		InitClient: true,
+	})
+	create.AddStringSliceFlag(config.ArgCols, "", defaultAutoscalingGroupCols, utils.ColsMessage(allAutoscalingGroupCols))
+	_ = create.Command.RegisterFlagCompletionFunc(config.ArgCols, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		return allAutoscalingGroupCols, cobra.ShellCompDirectiveNoFileComp
 	})
 	create.AddStringFlag(config.ArgName, config.ArgNameShort, "Unnamed Autoscaling Group", "User-defined name for the Autoscaling Group")
 	create.AddStringFlag(config.ArgDataCenterId, "", "", config.RequiredFlagDatacenterId)
@@ -196,6 +202,10 @@ Required values to run command:
 		return []string{"ABSOLUTE", "PERCENTAGE"}, cobra.ShellCompDirectiveNoFileComp
 	})
 	update.AddStringFlag(config.ArgScaleOutCoolDownPeriod, "", "", "[Group Policy][Scale Out Action] Cool Down Period")
+	update.AddStringSliceFlag(config.ArgCols, "", defaultAutoscalingGroupCols, utils.ColsMessage(allAutoscalingGroupCols))
+	_ = update.Command.RegisterFlagCompletionFunc(config.ArgCols, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		return allAutoscalingGroupCols, cobra.ShellCompDirectiveNoFileComp
+	})
 
 	/*
 		Delete Command
@@ -472,7 +482,7 @@ func getAutoscalingGroupPrint(resp *sdkAutoscaling.Response, c *core.CommandConf
 		if dcs != nil {
 			r.OutputJSON = dcs
 			r.KeyValue = getAutoscalingGroupsKVMaps(dcs)
-			r.Columns = getAutoscalingGroupCols(core.GetGlobalFlagName(c.Resource, config.ArgCols), c.Printer.GetStderr())
+			r.Columns = getAutoscalingGroupCols(core.GetFlagName(c.NS, config.ArgCols), c.Printer.GetStderr())
 		}
 	}
 	return r

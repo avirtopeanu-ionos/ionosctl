@@ -30,7 +30,7 @@ var (
 	testAutoscalingAction = sdkautoscaling.Action{
 		Action: ionoscloudautoscaling.Action{
 			Properties: &ionoscloudautoscaling.ActionProperties{
-				ActionStatus:       (*ionoscloudautoscaling.ActionStatus)(&testAutoscalingActionVar),
+				ActionStatus:       (*ionoscloudautoscaling.ActionStatus)(&testAutoscalingActionStatus),
 				ActionType:         (*ionoscloudautoscaling.ActionType)(&testAutoscalingActionVar),
 				TargetReplicaCount: &testAutoscalingActionIntVar,
 			},
@@ -43,6 +43,7 @@ var (
 		},
 	}
 	testAutoscalingActionVar    = "test-autoscaling-action"
+	testAutoscalingActionStatus = "SUCCESSFUL"
 	testAutoscalingActionIntVar = int64(1)
 	testAutoscalingActionErr    = errors.New("autoscaling action test error occurred")
 )
@@ -132,6 +133,24 @@ func TestRunAutoscalingActionGetErr(t *testing.T) {
 		rm.AutoscalingGroup.EXPECT().GetAction(testAutoscalingActionVar, testAutoscalingActionVar).Return(&testAutoscalingActionGet, nil, testAutoscalingActionErr)
 		err := RunAutoscalingActionGet(cfg)
 		assert.Error(t, err)
+	})
+}
+
+func TestRunAutoscalingActionGetWait(t *testing.T) {
+	var b bytes.Buffer
+	w := bufio.NewWriter(&b)
+	core.CmdConfigTest(t, w, func(cfg *core.CommandConfig, rm *core.ResourcesMocks) {
+		viper.Reset()
+		viper.Set(config.ArgOutput, config.DefaultOutputFormat)
+		viper.Set(config.ArgQuiet, false)
+		viper.Set(config.ArgServerUrl, config.DefaultApiURL)
+		viper.Set(core.GetFlagName(cfg.NS, config.ArgGroupId), testAutoscalingActionVar)
+		viper.Set(core.GetFlagName(cfg.NS, config.ArgActionId), testAutoscalingActionVar)
+		viper.Set(core.GetFlagName(cfg.NS, config.ArgWaitForState), true)
+		rm.AutoscalingGroup.EXPECT().GetAction(testAutoscalingActionVar, testAutoscalingActionVar).Return(&testAutoscalingActionGet, nil, nil)
+		rm.AutoscalingGroup.EXPECT().GetAction(testAutoscalingActionVar, testAutoscalingActionVar).Return(&testAutoscalingActionGet, nil, nil)
+		err := RunAutoscalingActionGet(cfg)
+		assert.NoError(t, err)
 	})
 }
 

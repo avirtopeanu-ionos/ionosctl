@@ -81,6 +81,6 @@ Required values to run command:
 ## Examples
 
 ```text
-ionosctl autoscaling group create
+ionosctl autoscaling group create --datacenter-id DATACENTER_ID --template-id TEMPLATE_ID
 ```
 

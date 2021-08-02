@@ -32,7 +32,7 @@ For `get` command:
 
 ## Description
 
-Use this command to retrieve details about an Action from an Autoscaling Group by using its ID.
+Use this command to retrieve details about an Action from an Autoscaling Group by using its ID. You can wait for the Action to be in Successful state using `--wait-for-state` or `-W` option.
 
 Required values to run command:
 
@@ -52,5 +52,13 @@ Required values to run command:
   -h, --help               help for get
   -o, --output string      Desired output format [text|json] (default "text")
   -q, --quiet              Quiet output
+  -t, --timeout int        Timeout option for waiting for Autoscaling Action to be SUCCESSFUL [seconds] (default 600)
+  -W, --wait-for-state     Wait for the Autoscaling Action to be SUCCESSFUL
+```
+
+## Examples
+
+```text
+ionosctl autoscaling action get --group-id GROUP_ID --action-id ACTION_ID -W
 ```
 

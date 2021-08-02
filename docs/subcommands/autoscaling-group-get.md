@@ -55,6 +55,6 @@ Required values to run command:
 ## Examples
 
 ```text
-ionosctl autoscaling group get -i TEMPLATE_ID
+ionosctl autoscaling group get -i GROUP_ID
 ```
 
