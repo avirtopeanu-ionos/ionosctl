@@ -32,10 +32,10 @@ func autoscalingTemplate() *core.Command {
 		},
 	}
 	globalFlags := autoscalingTemplateCmd.GlobalFlags()
-	globalFlags.StringSliceP(config.ArgCols, "", defaultTemplateCols, utils.ColsMessage(allTemplateCols))
+	globalFlags.StringSliceP(config.ArgCols, "", defaultAutoscalingTemplateCols, utils.ColsMessage(allAutoscalingTemplateCols))
 	_ = viper.BindPFlag(core.GetGlobalFlagName(autoscalingTemplateCmd.Name(), config.ArgCols), globalFlags.Lookup(config.ArgCols))
 	_ = autoscalingTemplateCmd.Command.RegisterFlagCompletionFunc(config.ArgCols, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-		return allTemplateCols, cobra.ShellCompDirectiveNoFileComp
+		return allAutoscalingTemplateCols, cobra.ShellCompDirectiveNoFileComp
 	})
 
 	/*
@@ -277,11 +277,11 @@ func getNewAutoscalingTemplate(c *core.CommandConfig) (*sdkAutoscaling.TemplateP
 // Output Printing
 
 var (
-	defaultTemplateCols = []string{"TemplateId", "Name", "Location", "CpuFamily", "AvailabilityZone", "Ram", "State"}
-	allTemplateCols     = []string{"TemplateId", "Name", "Location", "CpuFamily", "AvailabilityZone", "Cores", "Ram", "State"}
+	defaultAutoscalingTemplateCols = []string{"TemplateId", "Name", "Location", "CpuFamily", "AvailabilityZone", "Ram", "State"}
+	allAutoscalingTemplateCols     = []string{"TemplateId", "Name", "Location", "CpuFamily", "AvailabilityZone", "Cores", "Ram", "State"}
 )
 
-type TemplatePrint struct {
+type AutoscalingTemplatePrint struct {
 	TemplateId       string `json:"TemplateId,omitempty"`
 	AvailabilityZone string `json:"AvailabilityZone,omitempty"`
 	Cores            int32  `json:"Cores,omitempty"`
@@ -313,7 +313,7 @@ func getAutoscalingTemplateCols(flagName string, outErr io.Writer) []string {
 	if viper.IsSet(flagName) {
 		cols = viper.GetStringSlice(flagName)
 	} else {
-		return defaultTemplateCols
+		return defaultAutoscalingTemplateCols
 	}
 
 	columnsMap := map[string]string{
@@ -341,7 +341,7 @@ func getAutoscalingTemplateCols(flagName string, outErr io.Writer) []string {
 func getAutoscalingTemplatesKVMaps(templates []sdkAutoscaling.Template) []map[string]interface{} {
 	out := make([]map[string]interface{}, 0, len(templates))
 	for _, template := range templates {
-		var templatePrint TemplatePrint
+		var templatePrint AutoscalingTemplatePrint
 		if idOk, ok := template.GetIdOk(); ok && idOk != nil {
 			templatePrint.TemplateId = *idOk
 		}
