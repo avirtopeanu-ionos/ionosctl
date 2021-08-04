@@ -1,5 +1,5 @@
 ---
-description: List Autoscaling Templates
+description: List VM Autoscaling Templates
 ---
 
 # AutoscalingTemplateList
@@ -32,7 +32,7 @@ For `list` command:
 
 ## Description
 
-Use this command to retrieve a complete list of Autoscaling Templates provisioned under your account.
+Use this command to retrieve a complete list of VM Autoscaling Templates provisioned under your account.
 
 ## Options
 

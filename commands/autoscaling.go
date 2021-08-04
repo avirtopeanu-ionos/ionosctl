@@ -10,8 +10,8 @@ func autoscaling() *core.Command {
 		Command: &cobra.Command{
 			Use:              "autoscaling",
 			Aliases:          []string{"auto"},
-			Short:            "Autoscaling Resources Operations",
-			Long:             "The sub-commands of `ionosctl autoscaling` allow you to manage Autoscaling Resources.",
+			Short:            "VM Autoscaling Resources Operations",
+			Long:             "The sub-commands of `ionosctl autoscaling` allow you to manage VM AutoScaling Resources.",
 			TraverseChildren: true,
 		},
 	}

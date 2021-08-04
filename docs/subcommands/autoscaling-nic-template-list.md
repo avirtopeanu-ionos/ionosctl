@@ -1,5 +1,5 @@
 ---
-description: List NIC Templates from an Autoscaling Template
+description: List NIC Templates from a VM Autoscaling Template
 ---
 
 # AutoscalingNicTemplateList
@@ -32,11 +32,11 @@ For `list` command:
 
 ## Description
 
-Use this command to retrieve a complete list of NIC Templates from a specific Autoscaling Template provisioned under your account.
+Use this command to retrieve a complete list of NIC Templates from a specific VM Autoscaling Template provisioned under your account.
 
 Required values to run command:
 
-* Autoscaling Template Id
+* VM Autoscaling Template Id
 
 ## Options
 

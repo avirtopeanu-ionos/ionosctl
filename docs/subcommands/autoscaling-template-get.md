@@ -1,5 +1,5 @@
 ---
-description: Get an Autoscaling Template
+description: Get a VM Autoscaling Template
 ---
 
 # AutoscalingTemplateGet
@@ -32,11 +32,11 @@ For `get` command:
 
 ## Description
 
-Use this command to retrieve details about an Autoscaling Template by using its ID.
+Use this command to retrieve details about a VM Autoscaling Template by using its ID.
 
 Required values to run command:
 
-* Autoscaling Template Id
+* VM Autoscaling Template Id
 
 ## Options
 
