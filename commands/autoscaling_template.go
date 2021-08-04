@@ -26,8 +26,8 @@ func autoscalingTemplate() *core.Command {
 		Command: &cobra.Command{
 			Use:              "template",
 			Aliases:          []string{"t"},
-			Short:            "Autoscaling Template Operations",
-			Long:             "The sub-commands of `ionosctl autoscaling template` allow you to create, list, get and delete Autoscaling Templates.",
+			Short:            "VM Autoscaling Template Operations",
+			Long:             "The sub-commands of `ionosctl autoscaling template` allow you to create, list, get, update and delete VM Autoscaling Templates.",
 			TraverseChildren: true,
 		},
 	}
@@ -46,8 +46,8 @@ func autoscalingTemplate() *core.Command {
 		Resource:   "template",
 		Verb:       "list",
 		Aliases:    []string{"l", "ls"},
-		ShortDesc:  "List Autoscaling Templates",
-		LongDesc:   "Use this command to retrieve a complete list of Autoscaling Templates provisioned under your account.",
+		ShortDesc:  "List VM Autoscaling Templates",
+		LongDesc:   "Use this command to retrieve a complete list of VM Autoscaling Templates provisioned under your account.",
 		Example:    listTemplateAutoscalingExample,
 		PreCmdRun:  noPreRun,
 		CmdRun:     RunAutoscalingTemplateList,
@@ -62,8 +62,8 @@ func autoscalingTemplate() *core.Command {
 		Resource:   "template",
 		Verb:       "get",
 		Aliases:    []string{"g"},
-		ShortDesc:  "Get an Autoscaling Template",
-		LongDesc:   "Use this command to retrieve details about an Autoscaling Template by using its ID.\n\nRequired values to run command:\n\n* Autoscaling Template Id",
+		ShortDesc:  "Get a VM Autoscaling Template",
+		LongDesc:   "Use this command to retrieve details about a VM Autoscaling Template by using its ID.\n\nRequired values to run command:\n\n* VM Autoscaling Template Id",
 		Example:    getTemplateAutoscalingExample,
 		PreCmdRun:  PreRunAutoscalingTemplateId,
 		CmdRun:     RunAutoscalingTemplateGet,
@@ -82,25 +82,25 @@ func autoscalingTemplate() *core.Command {
 		Resource:  "template",
 		Verb:      "create",
 		Aliases:   []string{"c"},
-		ShortDesc: "Create an Autoscaling Template",
-		LongDesc: `Use this command to create an Autoscaling Template. The Autoscaling Template contains information for the VMs. You can specify the name, location, availability zone, cores, cpu family for the VMs.
+		ShortDesc: "Create a VM Autoscaling Template",
+		LongDesc: `Use this command to create a VM Autoscaling Template. The VM Autoscaling Template contains information for the VMs. You can specify the name, location, availability zone, cores, cpu family for the VMs.
 
 Regarding the Ram size, it must be specified in multiples of 256 MB with a minimum of 256 MB; however, if you set ramHotPlug to TRUE then you must use a minimum of 1024 MB. If you set the RAM size more than 240GB, then ramHotPlug will be set to FALSE and can not be set to TRUE unless RAM size not set to less than 240GB.
 
-Right now, the Autoscaling Template supports only one Template Volume. Important: the volume created will NOT be deleted on SCALE IN type of Autoscaling Actions. If you want to create a Volume Template, you need to provide Image Id. If you want to see the Volume Template properties, use ` + "`" + `ionosctl autoscaling volume-template list` + "`" + ` command.
+Right now, the VM Autoscaling Template supports only one Template Volume. Important: the volume created will NOT be deleted on SCALE IN type of Autoscaling Actions. If you want to create a Volume Template, you need to provide Image Id. If you want to see the Volume Template properties, use ` + "`" + `ionosctl autoscaling volume-template list` + "`" + ` command.
 
-Also, the Autoscaling Template supports multiple NIC Templates. To create an Autoscaling Template with multiple NIC Templates use ` + "`" + `--lan-ids "LAN_ID1,LAN_ID2"` + "`" + ` and ` + "`" + `--template-nics "NAME1,NAME2"` + "`" + ` options. It is recommended to use both options. If you want to see the NIC Templates properties, use ` + "`" + `ionosctl autoscaling nic-template list` + "`" + ` command.`,
+Also, the VM Autoscaling Template supports multiple NIC Templates. To create a VM Autoscaling Template with multiple NIC Templates use ` + "`" + `--lan-ids "LAN_ID1,LAN_ID2"` + "`" + ` and ` + "`" + `--template-nics "NAME1,NAME2"` + "`" + ` options. It is recommended to use both options. If you want to see the NIC Templates properties, use ` + "`" + `ionosctl autoscaling nic-template list` + "`" + ` command.`,
 		Example:    createTemplateAutoscalingExample,
 		PreCmdRun:  noPreRun,
 		CmdRun:     RunAutoscalingTemplateCreate,
 		InitClient: true,
 	})
-	create.AddStringFlag(config.ArgName, config.ArgNameShort, "Unnamed Autoscaling Template", "Name of the Autoscaling Template")
-	create.AddStringFlag(config.ArgLocation, config.ArgLocationShort, "de/txl", "Location for the Autoscaling Template")
+	create.AddStringFlag(config.ArgName, config.ArgNameShort, "Unnamed VM Autoscaling Template", "Name of the VM Autoscaling Template")
+	create.AddStringFlag(config.ArgLocation, config.ArgLocationShort, "de/txl", "Location for the VM Autoscaling Template")
 	_ = create.Command.RegisterFlagCompletionFunc(config.ArgLocation, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		return getLocationIds(os.Stderr), cobra.ShellCompDirectiveNoFileComp
 	})
-	create.AddStringFlag(config.ArgAvailabilityZone, config.ArgAvailabilityZoneShort, "AUTO", "Zone where the VMs created using this Autoscaling Template")
+	create.AddStringFlag(config.ArgAvailabilityZone, config.ArgAvailabilityZoneShort, "AUTO", "Zone where the VMs created using this VM Autoscaling Template")
 	_ = create.Command.RegisterFlagCompletionFunc(config.ArgCpuFamily, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		return []string{"AUTO", "ZONE_1", "ZONE_2"}, cobra.ShellCompDirectiveNoFileComp
 	})
@@ -109,13 +109,13 @@ Also, the Autoscaling Template supports multiple NIC Templates. To create an Aut
 	_ = create.Command.RegisterFlagCompletionFunc(config.ArgRam, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		return []string{"256MB", "512MB", "1024MB", "2048MB", "2GB", "3GB", "4GB", "5GB", "10GB", "16GB"}, cobra.ShellCompDirectiveNoFileComp
 	})
-	create.AddStringFlag(config.ArgCPUFamily, "", "", "CPU family for the VMs created using the Autoscaling Template. If null, the VM will be created with the default CPU family from the assigned location")
+	create.AddStringFlag(config.ArgCPUFamily, "", "", "CPU family for the VMs created using the VM Autoscaling Template. If null, the VM will be created with the default CPU family from the assigned location")
 	_ = create.Command.RegisterFlagCompletionFunc(config.ArgCPUFamily, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		return []string{"AMD_OPTERON", "INTEL_XEON", "INTEL_SKYLAKE"}, cobra.ShellCompDirectiveNoFileComp
 	})
 	// Flags for NIC Templates
 	create.AddIntSliceFlag(config.ArgLanIds, "", []int{1}, "Lan Ids for the NIC Templates. Minimum value for Lan Id: 1")
-	create.AddStringSliceFlag(config.ArgTemplateNics, "", []string{"Unnamed Autoscaling NIC Template"}, "Names for the NIC Templates")
+	create.AddStringSliceFlag(config.ArgTemplateNics, "", []string{"Unnamed VM Autoscaling NIC Template"}, "Names for the NIC Templates")
 	// Flags for Volume Template
 	create.AddStringFlag(config.ArgImageId, "", "", "Image installed on the Volume. Only Id of the Image is supported currently. Required flag when creating a Volume Template")
 	_ = create.Command.RegisterFlagCompletionFunc(config.ArgImageId, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
@@ -123,7 +123,7 @@ Also, the Autoscaling Template supports multiple NIC Templates. To create an Aut
 	})
 	create.AddStringFlag(config.ArgPassword, config.ArgPasswordShort, "abcde1234", "Image password for the Volume Template")
 	create.AddStringFlag(config.ArgUserData, "", "", "User-Data (Cloud Init) for the Volume Template")
-	create.AddStringFlag(config.ArgTemplateVolume, "", "Unnamed Autoscaling Template Volume", "Name of the Volume Template")
+	create.AddStringFlag(config.ArgTemplateVolume, "", "Unnamed VM Autoscaling Template Volume", "Name of the Volume Template")
 	create.AddStringFlag(config.ArgSize, "", strconv.Itoa(config.DefaultVolumeSize), "User-defined size for this template volume in GB. e.g.: --size 10 or --size 10GB.")
 	_ = create.Command.RegisterFlagCompletionFunc(config.ArgSize, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		return []string{"10GB", "20GB", "50GB", "100GB", "1TB"}, cobra.ShellCompDirectiveNoFileComp
@@ -142,12 +142,12 @@ Also, the Autoscaling Template supports multiple NIC Templates. To create an Aut
 		Resource:  "template",
 		Verb:      "delete",
 		Aliases:   []string{"d"},
-		ShortDesc: "Delete an Autoscaling Template",
-		LongDesc: `Use this command to delete a specified Autoscaling Template from your account.
+		ShortDesc: "Delete a VM Autoscaling Template",
+		LongDesc: `Use this command to delete a specified VM Autoscaling Template from your account.
 
 Required values to run command:
 
-* Autoscaling Template Id`,
+* VM Autoscaling Template Id`,
 		Example:    deleteTemplateAutoscalingExample,
 		PreCmdRun:  PreRunAutoscalingTemplateId,
 		CmdRun:     RunAutoscalingTemplateDelete,
@@ -198,7 +198,7 @@ func RunAutoscalingTemplateCreate(c *core.CommandConfig) error {
 }
 
 func RunAutoscalingTemplateDelete(c *core.CommandConfig) error {
-	if err := utils.AskForConfirm(c.Stdin, c.Printer, "delete autoscaling template"); err != nil {
+	if err := utils.AskForConfirm(c.Stdin, c.Printer, "delete VM autoscaling template"); err != nil {
 		return err
 	}
 	resp, err := c.AutoscalingTemplates().Delete(viper.GetString(core.GetFlagName(c.NS, config.ArgTemplateId)))

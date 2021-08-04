@@ -1,5 +1,5 @@
 ---
-description: Delete an Autoscaling Template
+description: Delete a VM Autoscaling Template
 ---
 
 # AutoscalingTemplateDelete
@@ -32,11 +32,11 @@ For `delete` command:
 
 ## Description
 
-Use this command to delete a specified Autoscaling Template from your account.
+Use this command to delete a specified VM Autoscaling Template from your account.
 
 Required values to run command:
 
-* Autoscaling Template Id
+* VM Autoscaling Template Id
 
 ## Options
 

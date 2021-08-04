@@ -25,8 +25,8 @@ func autoscalingVolumeTemplate() *core.Command {
 		Command: &cobra.Command{
 			Use:              "volume-template",
 			Aliases:          []string{"v"},
-			Short:            "Autoscaling Volume Template Operations",
-			Long:             "The sub-command of `ionosctl autoscaling volume-template` allows you to list Volume Templates from an Autoscaling Template.",
+			Short:            "VM Autoscaling Volume Template Operations",
+			Long:             "The sub-command of `ionosctl autoscaling volume-template` allows you to list Volume Templates from a VM Autoscaling Template.",
 			TraverseChildren: true,
 		},
 	}
@@ -45,8 +45,8 @@ func autoscalingVolumeTemplate() *core.Command {
 		Resource:   "volume-template",
 		Verb:       "list",
 		Aliases:    []string{"l", "ls"},
-		ShortDesc:  "List Volume Templates from an Autoscaling Template",
-		LongDesc:   "Use this command to retrieve a complete list of Volume Templates from a specific Autoscaling Template provisioned under your account.\n\nRequired values to run command:\n\n* Autoscaling Template Id",
+		ShortDesc:  "List Volume Templates from a VM Autoscaling Template",
+		LongDesc:   "Use this command to retrieve a complete list of Volume Templates from a specific VM Autoscaling Template provisioned under your account.\n\nRequired values to run command:\n\n* VM Autoscaling Template Id",
 		Example:    listVolumeTemplateAutoscalingExample,
 		PreCmdRun:  PreRunAutoscalingTemplateId,
 		CmdRun:     RunAutoscalingVolumeTemplateList,
@@ -69,10 +69,10 @@ func RunAutoscalingVolumeTemplateList(c *core.CommandConfig) error {
 		if volumesOk, ok := propertiesOk.GetVolumesOk(); ok && volumesOk != nil {
 			return c.Printer.Print(getAutoscalingVolumeTemplatePrint(c, getAutoscalingVolumeTemplates(volumesOk)))
 		} else {
-			return errors.New("error getting volumes from autoscaling template")
+			return errors.New("error getting volumes from VM autoscaling template")
 		}
 	} else {
-		return errors.New("error getting properties from autoscaling template")
+		return errors.New("error getting properties from VM autoscaling template")
 	}
 }
 

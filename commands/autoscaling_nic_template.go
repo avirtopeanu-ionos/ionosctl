@@ -24,8 +24,8 @@ func autoscalingNicTemplate() *core.Command {
 		Command: &cobra.Command{
 			Use:              "nic-template",
 			Aliases:          []string{"n"},
-			Short:            "Autoscaling NIC Template Operations",
-			Long:             "The sub-command of `ionosctl autoscaling nic-template` allows you to list NIC Templates from an Autoscaling Template.",
+			Short:            "VM Autoscaling NIC Template Operations",
+			Long:             "The sub-command of `ionosctl autoscaling nic-template` allows you to list NIC Templates from a VM Autoscaling Template.",
 			TraverseChildren: true,
 		},
 	}
@@ -44,8 +44,8 @@ func autoscalingNicTemplate() *core.Command {
 		Resource:   "nic-template",
 		Verb:       "list",
 		Aliases:    []string{"l", "ls"},
-		ShortDesc:  "List NIC Templates from an Autoscaling Template",
-		LongDesc:   "Use this command to retrieve a complete list of NIC Templates from a specific Autoscaling Template provisioned under your account.\n\nRequired values to run command:\n\n* Autoscaling Template Id",
+		ShortDesc:  "List NIC Templates from a VM Autoscaling Template",
+		LongDesc:   "Use this command to retrieve a complete list of NIC Templates from a specific VM Autoscaling Template provisioned under your account.\n\nRequired values to run command:\n\n* VM Autoscaling Template Id",
 		Example:    listNicTemplateAutoscalingExample,
 		PreCmdRun:  PreRunAutoscalingTemplateId,
 		CmdRun:     RunAutoscalingNicTemplateList,
