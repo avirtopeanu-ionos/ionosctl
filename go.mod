@@ -7,6 +7,7 @@ require (
 	github.com/fatih/color v1.10.0
 	github.com/fatih/structs v1.1.0
 	github.com/golang/mock v1.4.4
+	github.com/ionos-cloud/sdk-go-autoscaling v0.0.0-00010101000000-000000000000
 	github.com/ionos-cloud/sdk-go/v6 v6.0.0-beta.1
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/spf13/cobra v1.1.3
@@ -16,3 +17,5 @@ require (
 	go.uber.org/multierr v1.1.0
 	golang.org/x/term v0.0.0-20201117132131-f5c789dd3221
 )
+
+replace github.com/ionos-cloud/sdk-go-autoscaling => /home/ana/go/src/github.com/ionos-cloud/autoscaling/go-sdk/sdk-go-autoscaling

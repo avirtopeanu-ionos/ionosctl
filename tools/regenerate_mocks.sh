@@ -34,3 +34,12 @@ mockgen -source k8s.go >mocks/K8sService.go
 mockgen -source template.go >mocks/TemplateService.go
 
 pushd >/dev/null || exit
+
+# For cloudapi/autoscaling resources
+pushd "pkg/resources/autoscaling" >/dev/null || exit
+
+mockgen -source client.go >mocks/ClientService.go
+mockgen -source template.go >mocks/TemplateService.go
+mockgen -source group.go >mocks/GroupService.go
+
+pushd >/dev/null || exit

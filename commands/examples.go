@@ -367,4 +367,48 @@ ionosctl natgateway lan add --datacenter-id DATACENTER_ID --natgateway-id NATGAT
 	listNetworkLoadBalancerRuleTargetExample   = `ionosctl networkloadbalancer rule target list --datacenter-id DATACENTER_ID --networkloadbalancer-id NETWORKLOADBALANCER_ID --rule-id FORWARDINGRULE_ID`
 	addNetworkLoadBalancerRuleTargetExample    = `ionosctl networkloadbalancer rule target add --datacenter-id DATACENTER_ID --networkloadbalancer-id NETWORKLOADBALANCER_ID --rule-id FORWARDINGRULE_ID --target-ip TARGET_IP --target-port TARGET_PORT -w`
 	removeNetworkLoadBalancerRuleTargetExample = `ionosctl nlb rule target remove --datacenter-id DATACENTER_ID --networkloadbalancer-id NETWORKLOADBALANCER_ID --rule-id FORWARDINGRULE_ID --target-ip TARGET_IP --target-port TARGET_PORT -w`
+
+	/*
+		Autoscaling Examples
+	*/
+
+	/*
+		Autoscaling Template Example
+	*/
+	listTemplateAutoscalingExample   = `ionosctl autoscaling template list`
+	getTemplateAutoscalingExample    = `ionosctl autoscaling template get -i TEMPLATE_ID`
+	createTemplateAutoscalingExample = `ionosctl autoscaling template create
+ionosctl autoscaling template create --image-id IMAGE_ID`
+	deleteTemplateAutoscalingExample = `ionosctl autoscaling template delete -i TEMPLATE_ID`
+
+	/*
+		Autoscaling Volume Template Example
+	*/
+	listVolumeTemplateAutoscalingExample = `ionosctl autoscaling volume-template list --template-id TEMPLATE_ID`
+
+	/*
+		Autoscaling NIC Template Example
+	*/
+	listNicTemplateAutoscalingExample = `ionosctl autoscaling nic-template list --template-id TEMPLATE_ID`
+
+	/*
+		Autoscaling Group Example
+	*/
+	listGroupAutoscalingExample   = `ionosctl autoscaling group list`
+	getGroupAutoscalingExample    = `ionosctl autoscaling group get -i GROUP_ID`
+	createGroupAutoscalingExample = `ionosctl autoscaling group create --datacenter-id DATACENTER_ID --template-id TEMPLATE_ID`
+	updateGroupAutoscalingExample = `ionosctl autoscaling group update -i GROUP_ID --name GROUP_NAME`
+	deleteGroupAutoscalingExample = `ionosctl autoscaling group delete -i GROUP_ID`
+
+	/*
+		Autoscaling Server Example
+	*/
+	listServerAutoscalingExample = `ionosctl autoscaling server list --group-id GROUP_ID`
+	getServerAutoscalingExample  = `ionosctl autoscaling server get --group-id GROUP_ID --server-id SERVER_ID`
+
+	/*
+		Autoscaling Action Example
+	*/
+	listActionAutoscalingExample = `ionosctl autoscaling action list --group-id GROUP_ID`
+	getActionAutoscalingExample  = `ionosctl autoscaling action get --group-id GROUP_ID --action-id ACTION_ID -W`
 )

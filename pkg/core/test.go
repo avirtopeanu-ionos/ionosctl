@@ -7,6 +7,8 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/ionos-cloud/ionosctl/pkg/config"
+	"github.com/ionos-cloud/ionosctl/pkg/resources/autoscaling"
+	mockautoscaling "github.com/ionos-cloud/ionosctl/pkg/resources/autoscaling/mocks"
 	"github.com/ionos-cloud/ionosctl/pkg/resources/v6"
 	"github.com/ionos-cloud/ionosctl/pkg/resources/v6/mocks"
 	"github.com/ionos-cloud/ionosctl/pkg/utils/printer"
@@ -60,6 +62,10 @@ type ResourcesMocks struct {
 	Pcc                 *mock_resources.MockPccsService
 	K8s                 *mock_resources.MockK8sService
 	Template            *mock_resources.MockTemplatesService
+	// VM Autoscaling Resources Mocks
+	AutoscalingClient   *mockautoscaling.MockClientService
+	AutoscalingTemplate *mockautoscaling.MockTemplatesService
+	AutoscalingGroup    *mockautoscaling.MockGroupsService
 }
 
 func CmdConfigTest(t *testing.T, writer io.Writer, runner CmdRunnerTest) {
@@ -110,6 +116,10 @@ func initMockResources(ctrl *gomock.Controller) *ResourcesMocks {
 		Pcc:                 mock_resources.NewMockPccsService(ctrl),
 		K8s:                 mock_resources.NewMockK8sService(ctrl),
 		Template:            mock_resources.NewMockTemplatesService(ctrl),
+		// VM Autoscaling Resources Mocks
+		AutoscalingClient:   mockautoscaling.NewMockClientService(ctrl),
+		AutoscalingTemplate: mockautoscaling.NewMockTemplatesService(ctrl),
+		AutoscalingGroup:    mockautoscaling.NewMockGroupsService(ctrl),
 	}
 }
 
@@ -139,5 +149,8 @@ func initMockServices(c *CommandConfig, tm *ResourcesMocks) *CommandConfig {
 	c.Pccs = func() v6.PccsService { return tm.Pcc }
 	c.K8s = func() v6.K8sService { return tm.K8s }
 	c.Templates = func() v6.TemplatesService { return tm.Template }
+	// VM Autoscaling Resources Mocks
+	c.AutoscalingTemplates = func() autoscaling.TemplatesService { return tm.AutoscalingTemplate }
+	c.AutoscalingGroups = func() autoscaling.GroupsService { return tm.AutoscalingGroup }
 	return c
 }

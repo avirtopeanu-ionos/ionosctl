@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/ionos-cloud/ionosctl/pkg/config"
+	"github.com/ionos-cloud/ionosctl/pkg/resources/autoscaling"
 	"github.com/ionos-cloud/ionosctl/pkg/resources/v6"
 	"github.com/ionos-cloud/ionosctl/pkg/utils/clierror"
 	"github.com/ionos-cloud/ionosctl/pkg/utils/printer"
@@ -149,6 +150,9 @@ type CommandConfig struct {
 	Pccs                 func() v6.PccsService
 	K8s                  func() v6.K8sService
 	Templates            func() v6.TemplatesService
+	// VM Autoscaling Resources Services
+	AutoscalingTemplates func() autoscaling.TemplatesService
+	AutoscalingGroups    func() autoscaling.GroupsService
 	// Context
 	Context context.Context
 }
@@ -160,6 +164,24 @@ func (c *CommandConfig) InitV6Client() (*v6.Client, error) {
 		return nil, err
 	}
 	clientSvc, err := v6.NewClientService(
+		viper.GetString(config.Username),
+		viper.GetString(config.Password),
+		viper.GetString(config.Token), // Token support
+		viper.GetString(config.ArgServerUrl),
+	)
+	if err != nil {
+		return nil, err
+	}
+	return clientSvc.Get(), nil
+}
+
+// InitAutoscalingClient for Commands
+func (c *CommandConfig) InitAutoscalingClient() (*autoscaling.Client, error) {
+	err := config.Load()
+	if err != nil {
+		return nil, err
+	}
+	clientSvc, err := autoscaling.NewClientService(
 		viper.GetString(config.Username),
 		viper.GetString(config.Password),
 		viper.GetString(config.Token), // Token support
@@ -199,6 +221,13 @@ func (c *CommandConfig) InitV6Services(client *v6.Client) error {
 	c.Pccs = func() v6.PccsService { return v6.NewPrivateCrossConnectService(client, c.Context) }
 	c.K8s = func() v6.K8sService { return v6.NewK8sService(client, c.Context) }
 	c.Templates = func() v6.TemplatesService { return v6.NewTemplateService(client, c.Context) }
+	return nil
+}
+
+// InitAutoscalingServices for Commands
+func (c *CommandConfig) InitAutoscalingServices(client *autoscaling.Client) error {
+	c.AutoscalingTemplates = func() autoscaling.TemplatesService { return autoscaling.NewTemplateService(client, c.Context) }
+	c.AutoscalingGroups = func() autoscaling.GroupsService { return autoscaling.NewGroupService(client, c.Context) }
 	return nil
 }
 
