@@ -34,6 +34,11 @@ For `list` command:
 
 Use this command to retrieve a complete list of Actions from a VM Autoscaling Group provisioned under your account.
 
+Use flags to retrieve a list of Actions:
+
+* sorting by type, using `ionosctl autoscaling action list --group-id GROUP_ID --type ACTION_TYPE`
+* sorting by status, using `ionosctl autoscaling action list --group-id GROUP_ID --status ACTION_STATUS`
+
 Required values to run command:
 
 * VM Autoscaling Group Id
@@ -50,11 +55,15 @@ Required values to run command:
   -h, --help              help for list
   -o, --output string     Desired output format [text|json] (default "text")
   -q, --quiet             Quiet output
+  -s, --status string     Sort Actions based on VM Autoscaling Action Status
+  -t, --type string       Sort Actions based on VM Autoscaling Action Type
 ```
 
 ## Examples
 
 ```text
 ionosctl autoscaling action list --group-id GROUP_ID
+
+ionosctl autoscaling action list --group-id GROUP_ID --status ACTION_STATUS --type ACTION_TYPE
 ```
 

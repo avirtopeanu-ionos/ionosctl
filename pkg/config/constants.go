@@ -62,6 +62,7 @@ const (
 	ArgBus                     = "bus"
 	ArgLicenceType             = "licence-type"
 	ArgType                    = "type"
+	ArgTypeShort               = "t"
 	ArgSshKeys                 = "ssh-keys"
 	ArgPublic                  = "public"
 	ArgIps                     = "ips"
@@ -162,6 +163,8 @@ const (
 	ArgScaleOutAmount          = "scale-out-amount"
 	ArgScaleOutAmountType      = "scale-out-amount-type"
 	ArgScaleOutCoolDownPeriod  = "scale-out-cooldown"
+	ArgStatus                  = "status"
+	ArgStatusShort             = "s"
 )
 
 // IDs Flags
