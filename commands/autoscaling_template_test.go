@@ -60,7 +60,7 @@ var (
 			},
 		},
 	}
-	templates = sdkautoscaling.Templates{
+	testAutoscalingTemplates = sdkautoscaling.Templates{
 		TemplateCollection: ionoscloudautoscaling.TemplateCollection{
 			Id:    &testAutoscalingTemplateVar,
 			Items: &[]ionoscloudautoscaling.Template{testAutoscalingTemplateGet.Template, testAutoscalingTemplateGet.Template},
@@ -107,7 +107,7 @@ func TestRunAutoscalingTemplateList(t *testing.T) {
 		viper.Set(config.ArgOutput, config.DefaultOutputFormat)
 		viper.Set(config.ArgQuiet, false)
 		viper.Set(config.ArgServerUrl, config.DefaultApiURL)
-		rm.AutoscalingTemplate.EXPECT().List().Return(templates, nil, nil)
+		rm.AutoscalingTemplate.EXPECT().List().Return(testAutoscalingTemplates, nil, nil)
 		err := RunAutoscalingTemplateList(cfg)
 		assert.NoError(t, err)
 	})
@@ -121,7 +121,7 @@ func TestRunAutoscalingTemplateListErr(t *testing.T) {
 		viper.Set(config.ArgOutput, config.DefaultOutputFormat)
 		viper.Set(config.ArgQuiet, false)
 		viper.Set(config.ArgServerUrl, config.DefaultApiURL)
-		rm.AutoscalingTemplate.EXPECT().List().Return(templates, nil, testAutoscalingTemplateErr)
+		rm.AutoscalingTemplate.EXPECT().List().Return(testAutoscalingTemplates, nil, testAutoscalingTemplateErr)
 		err := RunAutoscalingTemplateList(cfg)
 		assert.Error(t, err)
 	})
