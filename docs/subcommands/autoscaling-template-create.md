@@ -59,7 +59,7 @@ Also, the VM Autoscaling Template supports multiple NIC Templates. To create a V
   -o, --output string              Desired output format [text|json] (default "text")
   -p, --password string            Image password for the Volume Template (default "abcde1234")
   -q, --quiet                      Quiet output
-      --ram string                 The amount of memory for the VMs. Size must be specified in multiples of 256. e.g. --ram 2048 or --ram 2048MB (default "1024")
+      --ram string                 The amount of memory for the VMs. Size must be specified in multiples of 256. e.g. --ram 1024 or --ram 1024MB (default "1024")
       --size string                User-defined size for this template volume in GB. e.g.: --size 10 or --size 10GB. (default "10")
       --ssh-keys strings           SSH Keys that have access to the Volume
       --template-nics strings      Names for the NIC Templates (default [Unnamed VM Autoscaling NIC Template])

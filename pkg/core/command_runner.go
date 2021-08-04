@@ -97,6 +97,13 @@ func NewCommandCfg(ctx context.Context, in io.Reader, p printer.PrintService, in
 			if err = c.InitV6Services(client); err != nil {
 				return err
 			}
+			autoscalingClient, err := c.InitAutoscalingClient()
+			if err != nil {
+				return err
+			}
+			if err = c.InitAutoscalingServices(autoscalingClient); err != nil {
+				return err
+			}
 			return nil
 		},
 	}

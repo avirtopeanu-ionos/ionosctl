@@ -31,17 +31,11 @@ func autoscalingTemplate() *core.Command {
 			TraverseChildren: true,
 		},
 	}
-	globalFlags := autoscalingTemplateCmd.GlobalFlags()
-	globalFlags.StringSliceP(config.ArgCols, "", defaultAutoscalingTemplateCols, utils.ColsMessage(allAutoscalingTemplateCols))
-	_ = viper.BindPFlag(core.GetGlobalFlagName(autoscalingTemplateCmd.Name(), config.ArgCols), globalFlags.Lookup(config.ArgCols))
-	_ = autoscalingTemplateCmd.Command.RegisterFlagCompletionFunc(config.ArgCols, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-		return allAutoscalingTemplateCols, cobra.ShellCompDirectiveNoFileComp
-	})
 
 	/*
 		List Command
 	*/
-	core.NewCommand(ctx, autoscalingTemplateCmd, core.CommandBuilder{
+	list := core.NewCommand(ctx, autoscalingTemplateCmd, core.CommandBuilder{
 		Namespace:  "autoscaling",
 		Resource:   "template",
 		Verb:       "list",
@@ -52,6 +46,10 @@ func autoscalingTemplate() *core.Command {
 		PreCmdRun:  noPreRun,
 		CmdRun:     RunAutoscalingTemplateList,
 		InitClient: true,
+	})
+	list.AddStringSliceFlag(config.ArgCols, "", defaultAutoscalingTemplateCols, utils.ColsMessage(allAutoscalingTemplateCols))
+	_ = list.Command.RegisterFlagCompletionFunc(config.ArgCols, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		return allAutoscalingTemplateCols, cobra.ShellCompDirectiveNoFileComp
 	})
 
 	/*
@@ -72,6 +70,10 @@ func autoscalingTemplate() *core.Command {
 	get.AddStringFlag(config.ArgTemplateId, config.ArgIdShort, "", config.RequiredFlagTemplateId)
 	_ = get.Command.RegisterFlagCompletionFunc(config.ArgTemplateId, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		return getAutoscalingTemplatesIds(os.Stderr), cobra.ShellCompDirectiveNoFileComp
+	})
+	get.AddStringSliceFlag(config.ArgCols, "", defaultAutoscalingTemplateCols, utils.ColsMessage(allAutoscalingTemplateCols))
+	_ = get.Command.RegisterFlagCompletionFunc(config.ArgCols, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		return allAutoscalingTemplateCols, cobra.ShellCompDirectiveNoFileComp
 	})
 
 	/*
@@ -95,6 +97,10 @@ Also, the VM Autoscaling Template supports multiple NIC Templates. To create a V
 		CmdRun:     RunAutoscalingTemplateCreate,
 		InitClient: true,
 	})
+	create.AddStringSliceFlag(config.ArgCols, "", defaultAutoscalingTemplateCols, utils.ColsMessage(allAutoscalingTemplateCols))
+	_ = create.Command.RegisterFlagCompletionFunc(config.ArgCols, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		return allAutoscalingTemplateCols, cobra.ShellCompDirectiveNoFileComp
+	})
 	create.AddStringFlag(config.ArgName, config.ArgNameShort, "Unnamed VM Autoscaling Template", "Name of the VM Autoscaling Template")
 	create.AddStringFlag(config.ArgLocation, config.ArgLocationShort, "de/txl", "Location for the VM Autoscaling Template")
 	_ = create.Command.RegisterFlagCompletionFunc(config.ArgLocation, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
@@ -105,7 +111,7 @@ Also, the VM Autoscaling Template supports multiple NIC Templates. To create a V
 		return []string{"AUTO", "ZONE_1", "ZONE_2"}, cobra.ShellCompDirectiveNoFileComp
 	})
 	create.AddIntFlag(config.ArgCores, "", 1, "The total number of cores for the VMs. Minimum: 1")
-	create.AddStringFlag(config.ArgRam, "", "1024", "The amount of memory for the VMs. Size must be specified in multiples of 256. e.g. --ram 2048 or --ram 2048MB")
+	create.AddStringFlag(config.ArgRam, "", "1024", "The amount of memory for the VMs. Size must be specified in multiples of 256. e.g. --ram 1024 or --ram 1024MB")
 	_ = create.Command.RegisterFlagCompletionFunc(config.ArgRam, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		return []string{"256MB", "512MB", "1024MB", "2048MB", "2GB", "3GB", "4GB", "5GB", "10GB", "16GB"}, cobra.ShellCompDirectiveNoFileComp
 	})
@@ -152,6 +158,10 @@ Required values to run command:
 		PreCmdRun:  PreRunAutoscalingTemplateId,
 		CmdRun:     RunAutoscalingTemplateDelete,
 		InitClient: true,
+	})
+	deleteCmd.AddStringSliceFlag(config.ArgCols, "", defaultAutoscalingTemplateCols, utils.ColsMessage(allAutoscalingTemplateCols))
+	_ = deleteCmd.Command.RegisterFlagCompletionFunc(config.ArgCols, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		return allAutoscalingTemplateCols, cobra.ShellCompDirectiveNoFileComp
 	})
 	deleteCmd.AddStringFlag(config.ArgTemplateId, config.ArgIdShort, "", config.RequiredFlagTemplateId)
 	_ = deleteCmd.Command.RegisterFlagCompletionFunc(config.ArgTemplateId, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
@@ -302,7 +312,7 @@ func getAutoscalingTemplatePrint(resp *sdkAutoscaling.Response, c *core.CommandC
 		if dcs != nil {
 			r.OutputJSON = dcs
 			r.KeyValue = getAutoscalingTemplatesKVMaps(dcs)
-			r.Columns = getAutoscalingTemplateCols(core.GetGlobalFlagName(c.Resource, config.ArgCols), c.Printer.GetStderr())
+			r.Columns = getAutoscalingTemplateCols(core.GetFlagName(c.NS, config.ArgCols), c.Printer.GetStderr())
 		}
 	}
 	return r
@@ -313,7 +323,7 @@ func getAutoscalingTemplateCols(flagName string, outErr io.Writer) []string {
 	if viper.IsSet(flagName) {
 		cols = viper.GetStringSlice(flagName)
 	} else {
-		return defaultTemplateCols
+		return defaultAutoscalingTemplateCols
 	}
 
 	columnsMap := map[string]string{
