@@ -58,7 +58,7 @@ type ResourcesMocks struct {
 	BackupUnit   *mockResourcesV5.MockBackupUnitsService
 	Pcc          *mockResourcesV5.MockPccsService
 	K8s          *mockResourcesV5.MockK8sService
-	// Autoscaling Resources Mocks
+	// VM Autoscaling Resources Mocks
 	AutoscalingClient   *mockautoscaling.MockClientService
 	AutoscalingTemplate *mockautoscaling.MockTemplatesService
 }
@@ -107,7 +107,7 @@ func initMockResources(ctrl *gomock.Controller) *ResourcesMocks {
 		BackupUnit:   mockResourcesV5.NewMockBackupUnitsService(ctrl),
 		Pcc:          mockResourcesV5.NewMockPccsService(ctrl),
 		K8s:          mockResourcesV5.NewMockK8sService(ctrl),
-		// Autoscaling Resources Mocks
+		// VM Autoscaling Resources Mocks
 		AutoscalingClient:   mockautoscaling.NewMockClientService(ctrl),
 		AutoscalingTemplate: mockautoscaling.NewMockTemplatesService(ctrl),
 	}
@@ -135,7 +135,7 @@ func initMockServices(c *CommandConfig, tm *ResourcesMocks) *CommandConfig {
 	c.BackupUnit = func() v5.BackupUnitsService { return tm.BackupUnit }
 	c.Pccs = func() v5.PccsService { return tm.Pcc }
 	c.K8s = func() v5.K8sService { return tm.K8s }
-	// Autoscaling Resources Mocks
+	// VM Autoscaling Resources Mocks
 	c.AutoscalingTemplates = func() autoscaling.TemplatesService { return tm.AutoscalingTemplate }
 	return c
 }
