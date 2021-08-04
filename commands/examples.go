@@ -313,6 +313,8 @@ ionosctl autoscaling template create --image-id IMAGE_ID`
 	/*
 		Autoscaling Action Example
 	*/
-	listActionAutoscalingExample = `ionosctl autoscaling action list --group-id GROUP_ID`
-	getActionAutoscalingExample  = `ionosctl autoscaling action get --group-id GROUP_ID --action-id ACTION_ID -W`
+	listActionAutoscalingExample = `ionosctl autoscaling action list --group-id GROUP_ID
+
+ionosctl autoscaling action list --group-id GROUP_ID --status ACTION_STATUS --type ACTION_TYPE`
+	getActionAutoscalingExample = `ionosctl autoscaling action get --group-id GROUP_ID --action-id ACTION_ID -W`
 )

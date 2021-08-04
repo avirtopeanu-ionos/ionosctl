@@ -3,8 +3,10 @@ package commands
 import (
 	"context"
 	"errors"
+	ionoscloudAutoscaling "github.com/ionos-cloud/sdk-go-autoscaling"
 	"io"
 	"os"
+	"strings"
 
 	"github.com/fatih/structs"
 	"github.com/ionos-cloud/ionosctl/pkg/config"
@@ -39,12 +41,21 @@ func autoscalingAction() *core.Command {
 		List Command
 	*/
 	list := core.NewCommand(ctx, autoscalingActionCmd, core.CommandBuilder{
-		Namespace:  "autoscaling",
-		Resource:   "action",
-		Verb:       "list",
-		Aliases:    []string{"l", "ls"},
-		ShortDesc:  "List Actions from a VM Autoscaling Group",
-		LongDesc:   "Use this command to retrieve a complete list of Actions from a VM Autoscaling Group provisioned under your account.\n\nRequired values to run command:\n\n* VM Autoscaling Group Id",
+		Namespace: "autoscaling",
+		Resource:  "action",
+		Verb:      "list",
+		Aliases:   []string{"l", "ls"},
+		ShortDesc: "List Actions from a VM Autoscaling Group",
+		LongDesc: `Use this command to retrieve a complete list of Actions from a VM Autoscaling Group provisioned under your account.
+
+Use flags to retrieve a list of Actions:
+
+* sorting by type, using ` + "`" + `ionosctl autoscaling action list --group-id GROUP_ID --type ACTION_TYPE` + "`" + `
+* sorting by status, using ` + "`" + `ionosctl autoscaling action list --group-id GROUP_ID --status ACTION_STATUS` + "`" + `
+
+Required values to run command:
+
+* VM Autoscaling Group Id`,
 		Example:    listActionAutoscalingExample,
 		PreCmdRun:  PreRunGroupId,
 		CmdRun:     RunAutoscalingActionList,
@@ -53,6 +64,14 @@ func autoscalingAction() *core.Command {
 	list.AddStringFlag(config.ArgGroupId, "", "", config.RequiredFlagGroupId)
 	_ = list.Command.RegisterFlagCompletionFunc(config.ArgGroupId, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		return getAutoscalingGroupsIds(os.Stderr), cobra.ShellCompDirectiveNoFileComp
+	})
+	list.AddStringFlag(config.ArgType, config.ArgTypeShort, "", "Sort Actions based on VM Autoscaling Action Type")
+	_ = list.Command.RegisterFlagCompletionFunc(config.ArgType, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		return []string{"SCALE_IN", "SCALE_OUT"}, cobra.ShellCompDirectiveNoFileComp
+	})
+	list.AddStringFlag(config.ArgStatus, config.ArgStatusShort, "", "Sort Actions based on VM Autoscaling Action Status")
+	_ = list.Command.RegisterFlagCompletionFunc(config.ArgStatus, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		return []string{"IN_PROGRESS", "SUCCESSFUL", "FAILED"}, cobra.ShellCompDirectiveNoFileComp
 	})
 
 	/*
@@ -93,7 +112,13 @@ func RunAutoscalingActionList(c *core.CommandConfig) error {
 	if err != nil {
 		return err
 	}
-	return c.Printer.Print(getAutoscalingActionPrint(nil, c, getAutoscalingActions(autoscalingActions)))
+	if viper.IsSet(core.GetFlagName(c.NS, config.ArgType)) {
+		autoscalingActions = sortAutoscalingActionsByType(autoscalingActions, viper.GetString(core.GetFlagName(c.NS, config.ArgType)))
+	}
+	if viper.IsSet(core.GetFlagName(c.NS, config.ArgStatus)) {
+		autoscalingActions = sortAutoscalingActionsByStatus(autoscalingActions, viper.GetString(core.GetFlagName(c.NS, config.ArgStatus)))
+	}
+	return c.Printer.Print(getAutoscalingActionPrint(c, getAutoscalingActions(autoscalingActions)))
 }
 
 func RunAutoscalingActionGet(c *core.CommandConfig) error {
@@ -106,7 +131,7 @@ func RunAutoscalingActionGet(c *core.CommandConfig) error {
 	if err != nil {
 		return err
 	}
-	return c.Printer.Print(getAutoscalingActionPrint(nil, c, []sdkAutoscaling.Action{*autoAction}))
+	return c.Printer.Print(getAutoscalingActionPrint(c, []sdkAutoscaling.Action{*autoAction}))
 }
 
 func GetStateAutoscalingAction(c *core.CommandConfig, objId string) (*string, error) {
@@ -130,6 +155,42 @@ func getAutoscalingActions(actions sdkAutoscaling.Actions) []sdkAutoscaling.Acti
 	return autoscalingActions
 }
 
+// Sort VM Autoscaling Actions Based on Action Type
+func sortAutoscalingActionsByType(actions sdkAutoscaling.Actions, actionType string) sdkAutoscaling.Actions {
+	items := make([]ionoscloudAutoscaling.Action, 0)
+	if itemsOk, ok := actions.GetItemsOk(); ok && itemsOk != nil {
+		for _, item := range *itemsOk {
+			if propertiesOk, ok := item.GetPropertiesOk(); ok && propertiesOk != nil {
+				if actionTypeOk, ok := propertiesOk.GetActionTypeOk(); ok && actionTypeOk != nil {
+					if string(*actionTypeOk) == strings.ToUpper(actionType) {
+						items = append(items, item)
+					}
+				}
+			}
+		}
+	}
+	actions.Items = &items
+	return actions
+}
+
+// Sort VM Autoscaling Actions Based on Action Status
+func sortAutoscalingActionsByStatus(actions sdkAutoscaling.Actions, actionStatus string) sdkAutoscaling.Actions {
+	items := make([]ionoscloudAutoscaling.Action, 0)
+	if itemsOk, ok := actions.GetItemsOk(); ok && itemsOk != nil {
+		for _, item := range *itemsOk {
+			if propertiesOk, ok := item.GetPropertiesOk(); ok && propertiesOk != nil {
+				if actionStatusOk, ok := propertiesOk.GetActionStatusOk(); ok && actionStatusOk != nil {
+					if string(*actionStatusOk) == strings.ToUpper(actionStatus) {
+						items = append(items, item)
+					}
+				}
+			}
+		}
+	}
+	actions.Items = &items
+	return actions
+}
+
 // Output Printing
 
 var defaultAutoscalingActionCols = []string{"ActionId", "ActionStatus", "ActionType", "TargetReplicaCount"}
@@ -141,13 +202,9 @@ type AutoscalingActionPrint struct {
 	TargetReplicaCount int64  `json:"TargetReplicaCount,omitempty"`
 }
 
-func getAutoscalingActionPrint(resp *sdkAutoscaling.Response, c *core.CommandConfig, dcs []sdkAutoscaling.Action) printer.Result {
+func getAutoscalingActionPrint(c *core.CommandConfig, dcs []sdkAutoscaling.Action) printer.Result {
 	r := printer.Result{}
 	if c != nil {
-		if resp != nil {
-			r.Resource = c.Resource
-			r.Verb = c.Verb
-		}
 		if dcs != nil {
 			r.OutputJSON = dcs
 			r.KeyValue = getAutoscalingActionsKVMaps(dcs)

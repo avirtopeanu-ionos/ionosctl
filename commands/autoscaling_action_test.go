@@ -30,7 +30,7 @@ var (
 	testAutoscalingAction = sdkautoscaling.Action{
 		Action: ionoscloudautoscaling.Action{
 			Properties: &ionoscloudautoscaling.ActionProperties{
-				ActionStatus:       (*ionoscloudautoscaling.ActionStatus)(&testAutoscalingActionStatus),
+				ActionStatus:       (*ionoscloudautoscaling.ActionStatus)(&testAutoscalingActionStatusVar),
 				ActionType:         (*ionoscloudautoscaling.ActionType)(&testAutoscalingActionVar),
 				TargetReplicaCount: &testAutoscalingActionIntVar,
 			},
@@ -42,10 +42,10 @@ var (
 			Items: &[]ionoscloudautoscaling.Action{testAutoscalingActionGet.Action, testAutoscalingActionGet.Action},
 		},
 	}
-	testAutoscalingActionVar    = "test-autoscaling-action"
-	testAutoscalingActionStatus = "SUCCESSFUL"
-	testAutoscalingActionIntVar = int64(1)
-	testAutoscalingActionErr    = errors.New("autoscaling action test error occurred")
+	testAutoscalingActionVar       = "test-autoscaling-action"
+	testAutoscalingActionStatusVar = "SUCCESSFUL"
+	testAutoscalingActionIntVar    = int64(1)
+	testAutoscalingActionErr       = errors.New("autoscaling action test error occurred")
 )
 
 func TestPreRunAutoscalingGroupActionIds(t *testing.T) {
@@ -82,6 +82,8 @@ func TestRunAutoscalingActionList(t *testing.T) {
 		viper.Set(config.ArgOutput, config.DefaultOutputFormat)
 		viper.Set(config.ArgQuiet, false)
 		viper.Set(config.ArgServerUrl, config.DefaultApiURL)
+		viper.Set(core.GetFlagName(cfg.NS, config.ArgStatus), testAutoscalingActionStatusVar)
+		viper.Set(core.GetFlagName(cfg.NS, config.ArgType), testAutoscalingActionVar)
 		viper.Set(core.GetFlagName(cfg.NS, config.ArgGroupId), testAutoscalingActionVar)
 		rm.AutoscalingGroup.EXPECT().ListActions(testAutoscalingActionVar).Return(testAutoscalingActions, nil, nil)
 		err := RunAutoscalingActionList(cfg)

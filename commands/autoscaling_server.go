@@ -28,12 +28,6 @@ func autoscalingServer() *core.Command {
 			TraverseChildren: true,
 		},
 	}
-	globalFlags := autoscalingServerCmd.GlobalFlags()
-	globalFlags.StringSliceP(config.ArgCols, "", defaultAutoscalingServerCols, utils.ColsMessage(defaultAutoscalingServerCols))
-	_ = viper.BindPFlag(core.GetGlobalFlagName(autoscalingServerCmd.Name(), config.ArgCols), globalFlags.Lookup(config.ArgCols))
-	_ = autoscalingServerCmd.Command.RegisterFlagCompletionFunc(config.ArgCols, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-		return defaultAutoscalingServerCols, cobra.ShellCompDirectiveNoFileComp
-	})
 
 	/*
 		List Command
@@ -49,6 +43,10 @@ func autoscalingServer() *core.Command {
 		PreCmdRun:  PreRunGroupId,
 		CmdRun:     RunAutoscalingServerList,
 		InitClient: true,
+	})
+	list.AddStringSliceFlag(config.ArgCols, "", defaultAutoscalingServerCols, utils.ColsMessage(defaultAutoscalingServerCols))
+	_ = list.Command.RegisterFlagCompletionFunc(config.ArgGroupId, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		return defaultAutoscalingServerCols, cobra.ShellCompDirectiveNoFileComp
 	})
 	list.AddStringFlag(config.ArgGroupId, "", "", config.RequiredFlagGroupId)
 	_ = list.Command.RegisterFlagCompletionFunc(config.ArgGroupId, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
@@ -69,6 +67,10 @@ func autoscalingServer() *core.Command {
 		PreCmdRun:  PreRunAutoscalingGroupServerIds,
 		CmdRun:     RunAutoscalingServerGet,
 		InitClient: true,
+	})
+	get.AddStringSliceFlag(config.ArgCols, "", defaultAutoscalingServerCols, utils.ColsMessage(defaultAutoscalingServerCols))
+	_ = get.Command.RegisterFlagCompletionFunc(config.ArgGroupId, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		return defaultAutoscalingServerCols, cobra.ShellCompDirectiveNoFileComp
 	})
 	get.AddStringFlag(config.ArgGroupId, "", "", config.RequiredFlagGroupId)
 	_ = get.Command.RegisterFlagCompletionFunc(config.ArgGroupId, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
@@ -91,7 +93,7 @@ func RunAutoscalingServerList(c *core.CommandConfig) error {
 	if err != nil {
 		return err
 	}
-	return c.Printer.Print(getAutoscalingServerPrint(nil, c, getAutoscalingServers(autoscalingServers)))
+	return c.Printer.Print(getAutoscalingServerPrint(c, getAutoscalingServers(autoscalingServers)))
 }
 
 func RunAutoscalingServerGet(c *core.CommandConfig) error {
@@ -99,7 +101,7 @@ func RunAutoscalingServerGet(c *core.CommandConfig) error {
 	if err != nil {
 		return err
 	}
-	return c.Printer.Print(getAutoscalingServerPrint(nil, c, []sdkAutoscaling.Server{*autoServer}))
+	return c.Printer.Print(getAutoscalingServerPrint(c, []sdkAutoscaling.Server{*autoServer}))
 }
 
 func getAutoscalingServers(servers sdkAutoscaling.Servers) []sdkAutoscaling.Server {
@@ -120,17 +122,13 @@ type AutoscalingServerPrint struct {
 	Name         string `json:"Name,omitempty"`
 }
 
-func getAutoscalingServerPrint(resp *sdkAutoscaling.Response, c *core.CommandConfig, dcs []sdkAutoscaling.Server) printer.Result {
+func getAutoscalingServerPrint(c *core.CommandConfig, dcs []sdkAutoscaling.Server) printer.Result {
 	r := printer.Result{}
 	if c != nil {
-		if resp != nil {
-			r.Resource = c.Resource
-			r.Verb = c.Verb
-		}
 		if dcs != nil {
 			r.OutputJSON = dcs
 			r.KeyValue = getAutoscalingServersKVMaps(dcs)
-			r.Columns = getAutoscalingServerCols(core.GetGlobalFlagName(c.Resource, config.ArgCols), c.Printer.GetStderr())
+			r.Columns = getAutoscalingServerCols(core.GetFlagName(c.NS, config.ArgCols), c.Printer.GetStderr())
 		}
 	}
 	return r
