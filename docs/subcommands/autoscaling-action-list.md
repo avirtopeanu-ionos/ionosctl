@@ -1,5 +1,5 @@
 ---
-description: List Actions from an Autoscaling Group
+description: List Actions from a VM Autoscaling Group
 ---
 
 # AutoscalingActionList
@@ -32,11 +32,11 @@ For `list` command:
 
 ## Description
 
-Use this command to retrieve a complete list of Actions from an Autoscaling Group provisioned under your account.
+Use this command to retrieve a complete list of Actions from a VM Autoscaling Group provisioned under your account.
 
 Required values to run command:
 
-* Autoscaling Group Id
+* VM Autoscaling Group Id
 
 ## Options
 

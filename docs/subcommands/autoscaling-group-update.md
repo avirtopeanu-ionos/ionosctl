@@ -1,5 +1,5 @@
 ---
-description: Update an Autoscaling Group
+description: Update a VM Autoscaling Group
 ---
 
 # AutoscalingGroupUpdate
@@ -32,11 +32,11 @@ For `update` command:
 
 ## Description
 
-Update an Autoscaling Group. 
+Update a VM Autoscaling Group. 
 
 Required values to run command:
 
-* Autoscaling Group Id
+* VM Autoscaling Group Id
 
 ## Options
 
@@ -51,7 +51,7 @@ Required values to run command:
       --max-replica-count targetReplicaCount   Maximum replica count value for targetReplicaCount. Will be enforced for both automatic and manual changes. Mininum: 0; Maximum: 200
   -m, --metric string                          [Group Policy] The Metric that should trigger Scaling Actions. The values of the Metric are checked in fixed intervals
       --min-replica-count targetReplicaCount   Minimum replica count value for targetReplicaCount. Will be enforced for both automatic and manual changes. Mininum: 0; Maximum: 200
-  -n, --name string                            User-defined name for the Autoscaling Group
+  -n, --name string                            User-defined name for the VM Autoscaling Group
   -o, --output string                          Desired output format [text|json] (default "text")
   -q, --quiet                                  Quiet output
   -r, --range string                           [Group Policy] Defines the range of time from which samples will be aggregated

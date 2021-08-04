@@ -1,5 +1,5 @@
 ---
-description: Get a Server from an Autoscaling Group
+description: Get a Server from a VM Autoscaling Group
 ---
 
 # AutoscalingServerGet
@@ -32,11 +32,11 @@ For `get` command:
 
 ## Description
 
-Use this command to retrieve details about an Server from a specific Autoscaling Group by using its ID.
+Use this command to retrieve details about an Server from a specific VM Autoscaling Group by using its ID.
 
 Required values to run command:
 
-* Autoscaling Group Id
+* VM Autoscaling Group Id
 
 * Server Id
 

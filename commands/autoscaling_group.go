@@ -24,8 +24,8 @@ func autoscalingGroup() *core.Command {
 		Command: &cobra.Command{
 			Use:              "group",
 			Aliases:          []string{"g"},
-			Short:            "Autoscaling Group Operations",
-			Long:             "The sub-commands of `ionosctl autoscaling group` allow you to create, list, get, update and delete Autoscaling Groups.",
+			Short:            "VM Autoscaling Group Operations",
+			Long:             "The sub-commands of `ionosctl autoscaling group` allow you to create, list, get, update and delete VM Autoscaling Groups.",
 			TraverseChildren: true,
 		},
 	}
@@ -38,8 +38,8 @@ func autoscalingGroup() *core.Command {
 		Resource:   "group",
 		Verb:       "list",
 		Aliases:    []string{"l", "ls"},
-		ShortDesc:  "List Autoscaling Groups",
-		LongDesc:   "Use this command to retrieve a complete list of Autoscaling Groups provisioned under your account.",
+		ShortDesc:  "List VM Autoscaling Groups",
+		LongDesc:   "Use this command to retrieve a complete list of VM Autoscaling Groups provisioned under your account.",
 		Example:    listGroupAutoscalingExample,
 		PreCmdRun:  noPreRun,
 		CmdRun:     RunAutoscalingGroupList,
@@ -58,8 +58,8 @@ func autoscalingGroup() *core.Command {
 		Resource:   "group",
 		Verb:       "get",
 		Aliases:    []string{"g"},
-		ShortDesc:  "Get an Autoscaling Group",
-		LongDesc:   "Use this command to retrieve details about an Autoscaling Group by using its ID.\n\nRequired values to run command:\n\n* Autoscaling Group Id",
+		ShortDesc:  "Get a VM Autoscaling Group",
+		LongDesc:   "Use this command to retrieve details about a VM Autoscaling Group by using its ID.\n\nRequired values to run command:\n\n* VM Autoscaling Group Id",
 		Example:    getGroupAutoscalingExample,
 		PreCmdRun:  PreRunAutoscalingGroupId,
 		CmdRun:     RunAutoscalingGroupGet,
@@ -82,12 +82,12 @@ func autoscalingGroup() *core.Command {
 		Resource:  "group",
 		Verb:      "create",
 		Aliases:   []string{"c"},
-		ShortDesc: "Create an Autoscaling Group",
-		LongDesc: `Create an Autoscaling Group. 
+		ShortDesc: "Create a VM Autoscaling Group",
+		LongDesc: `Create a VM Autoscaling Group. 
 
-Regarding some of the Autoscaling Group Properties, please see more details:
+Regarding some of the VM Autoscaling Group Properties, please see more details:
 
-* [Group][DatacenterId]The Datacenter Id property represents VMs for this Autoscaling Group will be created in this Virtual Datacenter. Please note, that it have the same location as the template.
+* [Group][DatacenterId]The Datacenter Id property represents VMs for this VM Autoscaling Group will be created in this Virtual Datacenter. Please note, that it have the same location as the template.
 * [Group][TargetReplicaCount] Depending on the scaling policy, the target number of VMs will be adjusted automatically. VMs will be created or destroyed automatically in order to adjust the actual number of VMs to this number. This value can be set only at Group creation time, subsequent change via update (PUT) request is not possible
 * [Group Policy][ScaleInThreshold] Scale In Threshold is a lower threshold on the value of ` + "`" + `metric` + "`" + `. Will be used with ` + "`" + `less than` + "`" + ` (<) operator. Exceeding this will start a Scale-In Action as specified by the ` + "`" + `scaleInAction` + "`" + ` property. The value must have a higher minimum delta to the ` + "`" + `scaleOutThreshold` + "`" + ` depending on the ` + "`" + `metric` + "`" + ` to avoid competitive actions at the same time
 * [Group Policy][ScaleOutThreshold] An upper threshold on the value of ` + "`" + `metric` + "`" + `.  Will be used with ` + "`" + `greater than` + "`" + ` (>) operator. Exceeding this will start a Scale-Out Action as specified by the ` + "`" + `scaleOutAction` + "`" + ` property. The value must have a lower minimum delta to the ` + "`" + `scaleInThreshold` + "`" + ` depending on the ` + "`" + `metric` + "`" + ` to avoid competitive actions at the same time
@@ -96,7 +96,7 @@ Regarding some of the Autoscaling Group Properties, please see more details:
 
 Required values to run command:
 
-* Autoscaling Template Id
+* VM Autoscaling Template Id
 * Datacenter Id`,
 		Example:    createGroupAutoscalingExample,
 		PreCmdRun:  PreRunDatacenterAutoscalingTemplateIds,
@@ -107,7 +107,7 @@ Required values to run command:
 	_ = create.Command.RegisterFlagCompletionFunc(config.ArgCols, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		return allAutoscalingGroupCols, cobra.ShellCompDirectiveNoFileComp
 	})
-	create.AddStringFlag(config.ArgName, config.ArgNameShort, "Unnamed Autoscaling Group", "User-defined name for the Autoscaling Group")
+	create.AddStringFlag(config.ArgName, config.ArgNameShort, "Unnamed VM Autoscaling Group", "User-defined name for the VM Autoscaling Group")
 	create.AddStringFlag(config.ArgDataCenterId, "", "", config.RequiredFlagDatacenterId)
 	_ = create.Command.RegisterFlagCompletionFunc(config.ArgDataCenterId, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		return getDataCentersIds(os.Stderr), cobra.ShellCompDirectiveNoFileComp
@@ -154,12 +154,12 @@ Required values to run command:
 		Resource:  "group",
 		Verb:      "update",
 		Aliases:   []string{"up"},
-		ShortDesc: "Update an Autoscaling Group",
-		LongDesc: `Update an Autoscaling Group. 
+		ShortDesc: "Update a VM Autoscaling Group",
+		LongDesc: `Update a VM Autoscaling Group. 
 
 Required values to run command:
 
-* Autoscaling Group Id`,
+* VM Autoscaling Group Id`,
 		Example:    updateGroupAutoscalingExample,
 		PreCmdRun:  PreRunAutoscalingGroupId,
 		CmdRun:     RunAutoscalingGroupUpdate,
@@ -169,7 +169,7 @@ Required values to run command:
 	_ = update.Command.RegisterFlagCompletionFunc(config.ArgGroupId, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		return getAutoscalingGroupsIds(os.Stderr), cobra.ShellCompDirectiveNoFileComp
 	})
-	update.AddStringFlag(config.ArgName, config.ArgNameShort, "", "User-defined name for the Autoscaling Group")
+	update.AddStringFlag(config.ArgName, config.ArgNameShort, "", "User-defined name for the VM Autoscaling Group")
 	update.AddIntFlag(config.ArgMaxReplicaCount, "", 0, "Maximum replica count value for `targetReplicaCount`. Will be enforced for both automatic and manual changes. Mininum: 0; Maximum: 200")
 	update.AddIntFlag(config.ArgMinReplicaCount, "", 0, "Minimum replica count value for `targetReplicaCount`. Will be enforced for both automatic and manual changes. Mininum: 0; Maximum: 200")
 	update.AddStringFlag(config.ArgTemplateId, "", "", "The unique Template Id")
@@ -215,12 +215,12 @@ Required values to run command:
 		Resource:  "group",
 		Verb:      "delete",
 		Aliases:   []string{"d"},
-		ShortDesc: "Delete an Autoscaling Group",
-		LongDesc: `Use this command to delete a specified Autoscaling Group from your account.
+		ShortDesc: "Delete a VM Autoscaling Group",
+		LongDesc: `Use this command to delete a specified VM Autoscaling Group from your account.
 
 Required values to run command:
 
-* Autoscaling Group Id`,
+* VM Autoscaling Group Id`,
 		Example:    deleteGroupAutoscalingExample,
 		PreCmdRun:  PreRunAutoscalingGroupId,
 		CmdRun:     RunAutoscalingGroupDelete,

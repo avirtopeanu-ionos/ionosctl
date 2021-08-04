@@ -1,5 +1,5 @@
 ---
-description: List Autoscaling Groups
+description: List VM Autoscaling Groups
 ---
 
 # AutoscalingGroupList
@@ -32,7 +32,7 @@ For `list` command:
 
 ## Description
 
-Use this command to retrieve a complete list of Autoscaling Groups provisioned under your account.
+Use this command to retrieve a complete list of VM Autoscaling Groups provisioned under your account.
 
 ## Options
 

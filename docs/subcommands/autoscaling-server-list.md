@@ -1,5 +1,5 @@
 ---
-description: List Servers from an Autoscaling Group
+description: List Servers from a VM Autoscaling Group
 ---
 
 # AutoscalingServerList
@@ -32,11 +32,11 @@ For `list` command:
 
 ## Description
 
-Use this command to retrieve a complete list of Servers from a specified Autoscaling Group provisioned under your account.
+Use this command to retrieve a complete list of Servers from a specified VM Autoscaling Group provisioned under your account.
 
 Required values to run command:
 
-* Autoscaling Group Id
+* VM Autoscaling Group Id
 
 ## Options
 

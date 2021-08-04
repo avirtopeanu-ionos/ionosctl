@@ -1,5 +1,5 @@
 ---
-description: Get an Autoscaling Group
+description: Get a VM Autoscaling Group
 ---
 
 # AutoscalingGroupGet
@@ -32,11 +32,11 @@ For `get` command:
 
 ## Description
 
-Use this command to retrieve details about an Autoscaling Group by using its ID.
+Use this command to retrieve details about a VM Autoscaling Group by using its ID.
 
 Required values to run command:
 
-* Autoscaling Group Id
+* VM Autoscaling Group Id
 
 ## Options
 

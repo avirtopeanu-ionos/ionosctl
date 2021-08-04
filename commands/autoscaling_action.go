@@ -23,8 +23,8 @@ func autoscalingAction() *core.Command {
 		Command: &cobra.Command{
 			Use:              "action",
 			Aliases:          []string{"a"},
-			Short:            "Autoscaling Action Operations",
-			Long:             "The sub-commands of `ionosctl autoscaling action` allow you to list, get Actions from an Autoscaling Group.",
+			Short:            "VM Autoscaling Action Operations",
+			Long:             "The sub-commands of `ionosctl autoscaling action` allow you to list, get Actions from a VM Autoscaling Group.",
 			TraverseChildren: true,
 		},
 	}
@@ -43,8 +43,8 @@ func autoscalingAction() *core.Command {
 		Resource:   "action",
 		Verb:       "list",
 		Aliases:    []string{"l", "ls"},
-		ShortDesc:  "List Actions from an Autoscaling Group",
-		LongDesc:   "Use this command to retrieve a complete list of Actions from an Autoscaling Group provisioned under your account.\n\nRequired values to run command:\n\n* Autoscaling Group Id",
+		ShortDesc:  "List Actions from a VM Autoscaling Group",
+		LongDesc:   "Use this command to retrieve a complete list of Actions from a VM Autoscaling Group provisioned under your account.\n\nRequired values to run command:\n\n* VM Autoscaling Group Id",
 		Example:    listActionAutoscalingExample,
 		PreCmdRun:  PreRunGroupId,
 		CmdRun:     RunAutoscalingActionList,
@@ -63,8 +63,8 @@ func autoscalingAction() *core.Command {
 		Resource:   "action",
 		Verb:       "get",
 		Aliases:    []string{"g"},
-		ShortDesc:  "Get an Action from an Autoscaling Group",
-		LongDesc:   "Use this command to retrieve details about an Action from an Autoscaling Group by using its ID. You can wait for the Action to be in Successful state using `--wait-for-state` or `-W` option.\n\nRequired values to run command:\n\n* Autoscaling Group Id\n* Action Id",
+		ShortDesc:  "Get an Action from a VM Autoscaling Group",
+		LongDesc:   "Use this command to retrieve details about an Action from a VM Autoscaling Group by using its ID. You can wait for the Action to be in Successful state using `--wait-for-state` or `-W` option.\n\nRequired values to run command:\n\n* VM Autoscaling Group Id\n* Action Id",
 		Example:    getActionAutoscalingExample,
 		PreCmdRun:  PreRunAutoscalingGroupActionIds,
 		CmdRun:     RunAutoscalingActionGet,
@@ -79,7 +79,7 @@ func autoscalingAction() *core.Command {
 		return getAutoscalingActionsIds(os.Stderr, viper.GetString(core.GetFlagName(get.NS, config.ArgGroupId))), cobra.ShellCompDirectiveNoFileComp
 	})
 	get.AddBoolFlag(config.ArgWaitForState, config.ArgWaitForStateShort, config.DefaultWait, "Wait for the Autoscaling Action to be SUCCESSFUL")
-	get.AddIntFlag(config.ArgTimeout, config.ArgTimeoutShort, 600, "Timeout option for waiting for Autoscaling Action to be SUCCESSFUL [seconds]")
+	get.AddIntFlag(config.ArgTimeout, config.ArgTimeoutShort, 600, "Timeout option for waiting for VM Autoscaling Action to be SUCCESSFUL [seconds]")
 
 	return autoscalingActionCmd
 }

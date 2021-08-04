@@ -1,5 +1,5 @@
 ---
-description: Create an Autoscaling Group
+description: Create a VM Autoscaling Group
 ---
 
 # AutoscalingGroupCreate
@@ -32,11 +32,11 @@ For `create` command:
 
 ## Description
 
-Create an Autoscaling Group. 
+Create a VM Autoscaling Group. 
 
-Regarding some of the Autoscaling Group Properties, please see more details:
+Regarding some of the VM Autoscaling Group Properties, please see more details:
 
-* [Group][DatacenterId]The Datacenter Id property represents VMs for this Autoscaling Group will be created in this Virtual Datacenter. Please note, that it have the same location as the template.
+* [Group][DatacenterId]The Datacenter Id property represents VMs for this VM Autoscaling Group will be created in this Virtual Datacenter. Please note, that it have the same location as the template.
 * [Group][TargetReplicaCount] Depending on the scaling policy, the target number of VMs will be adjusted automatically. VMs will be created or destroyed automatically in order to adjust the actual number of VMs to this number. This value can be set only at Group creation time, subsequent change via update (PUT) request is not possible
 * [Group Policy][ScaleInThreshold] Scale In Threshold is a lower threshold on the value of `metric`. Will be used with `less than` (<) operator. Exceeding this will start a Scale-In Action as specified by the `scaleInAction` property. The value must have a higher minimum delta to the `scaleOutThreshold` depending on the `metric` to avoid competitive actions at the same time
 * [Group Policy][ScaleOutThreshold] An upper threshold on the value of `metric`.  Will be used with `greater than` (>) operator. Exceeding this will start a Scale-Out Action as specified by the `scaleOutAction` property. The value must have a lower minimum delta to the `scaleInThreshold` depending on the `metric` to avoid competitive actions at the same time
@@ -45,7 +45,7 @@ Regarding some of the Autoscaling Group Properties, please see more details:
 
 Required values to run command:
 
-* Autoscaling Template Id
+* VM Autoscaling Template Id
 * Datacenter Id
 
 ## Options
@@ -61,7 +61,7 @@ Required values to run command:
       --max-replica-count targetReplicaCount   Maximum replica count value for targetReplicaCount. Will be enforced for both automatic and manual changes. Mininum: 0; Maximum: 200 (default 5)
   -m, --metric string                          [Group Policy] The Metric that should trigger Scaling Actions. The values of the Metric are checked in fixed intervals (default "INSTANCE_CPU_UTILIZATION_AVERAGE")
       --min-replica-count targetReplicaCount   Minimum replica count value for targetReplicaCount. Will be enforced for both automatic and manual changes. Mininum: 0; Maximum: 200 (default 1)
-  -n, --name string                            User-defined name for the Autoscaling Group (default "Unnamed Autoscaling Group")
+  -n, --name string                            User-defined name for the VM Autoscaling Group (default "Unnamed VM Autoscaling Group")
   -o, --output string                          Desired output format [text|json] (default "text")
   -q, --quiet                                  Quiet output
   -r, --range string                           [Group Policy] Defines the range of time from which samples will be aggregated (default "PT24H")

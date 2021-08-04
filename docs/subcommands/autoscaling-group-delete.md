@@ -1,5 +1,5 @@
 ---
-description: Delete an Autoscaling Group
+description: Delete a VM Autoscaling Group
 ---
 
 # AutoscalingGroupDelete
@@ -32,11 +32,11 @@ For `delete` command:
 
 ## Description
 
-Use this command to delete a specified Autoscaling Group from your account.
+Use this command to delete a specified VM Autoscaling Group from your account.
 
 Required values to run command:
 
-* Autoscaling Group Id
+* VM Autoscaling Group Id
 
 ## Options
 
