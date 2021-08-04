@@ -153,7 +153,7 @@ type CommandConfig struct {
 	BackupUnit    func() v5.BackupUnitsService
 	Pccs          func() v5.PccsService
 	K8s           func() v5.K8sService
-	// Autoscaling Resources Services
+	// VM Autoscaling Resources Services
 	AutoscalingTemplates func() autoscaling.TemplatesService
 	AutoscalingGroups    func() autoscaling.GroupsService
 
@@ -179,7 +179,7 @@ func (c *CommandConfig) InitV5Client() (*v5.Client, error) {
 	return clientSvc.Get(), nil
 }
 
-// InitAutoscalingClient for Commands
+// InitAutoscalingClient for Commands for VM Autoscaling Resources
 func (c *CommandConfig) InitAutoscalingClient() (*autoscaling.Client, error) {
 	err := config.Load()
 	if err != nil {
@@ -222,7 +222,7 @@ func (c *CommandConfig) InitV5Services(client *v5.Client) error {
 	return nil
 }
 
-// InitAutoscalingServices for Commands
+// InitAutoscalingServices for Commands for VM Autoscaling Resources
 func (c *CommandConfig) InitAutoscalingServices(client *autoscaling.Client) error {
 	c.AutoscalingTemplates = func() autoscaling.TemplatesService { return autoscaling.NewTemplateService(client, c.Context) }
 	c.AutoscalingGroups = func() autoscaling.GroupsService { return autoscaling.NewGroupService(client, c.Context) }
