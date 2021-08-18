@@ -57,6 +57,7 @@ Required values to run command:
   -q, --quiet             Quiet output
   -s, --status string     Sort Actions based on VM Autoscaling Action Status
   -t, --type string       Sort Actions based on VM Autoscaling Action Type
+  -v, --verbose           see step by step process when running a command
 ```
 
 ## Examples

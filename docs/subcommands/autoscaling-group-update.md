@@ -65,6 +65,7 @@ Required values to run command:
       --scale-out-threshold metric             [Group Policy][Scale Out Action] An upper threshold on the value of metric (default 40)
       --template-id string                     The unique Template Id
       --unit string                            [Group Policy] Unit of the applied Metric
+  -v, --verbose                                see step by step process when running a command
 ```
 
 ## Examples
