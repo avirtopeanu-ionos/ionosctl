@@ -251,6 +251,7 @@ func RunAutoscalingGroupList(c *core.CommandConfig) error {
 }
 
 func RunAutoscalingGroupGet(c *core.CommandConfig) error {
+	c.Printer.Verbose("Getting VM Autoscaling Group with ID %v", viper.GetString(core.GetFlagName(c.NS, config.ArgGroupId)))
 	autoGroup, _, err := c.AutoscalingGroups().Get(viper.GetString(core.GetFlagName(c.NS, config.ArgGroupId)))
 	if err != nil {
 		return err
@@ -263,6 +264,7 @@ func RunAutoscalingGroupCreate(c *core.CommandConfig) error {
 	if err != nil {
 		return err
 	}
+	c.Printer.Verbose("Creating VM Autoscaling Group...")
 	dc, resp, err := c.AutoscalingGroups().Create(sdkAutoscaling.Group{
 		Group: ionoscloudAutoscaling.Group{
 			Properties: &groupProperties.GroupProperties,
@@ -283,6 +285,7 @@ func RunAutoscalingGroupUpdate(c *core.CommandConfig) error {
 	if err != nil {
 		return err
 	}
+	c.Printer.Verbose("Updating VM Autoscaling Group with ID: %v", viper.GetString(core.GetFlagName(c.NS, config.ArgGroupId)))
 	dc, resp, err := c.AutoscalingGroups().Update(viper.GetString(core.GetFlagName(c.NS, config.ArgGroupId)), sdkAutoscaling.Group{
 		Group: ionoscloudAutoscaling.Group{
 			Properties: &groupProperties.GroupProperties,
@@ -298,6 +301,7 @@ func RunAutoscalingGroupDelete(c *core.CommandConfig) error {
 	if err := utils.AskForConfirm(c.Stdin, c.Printer, "delete autoscaling group"); err != nil {
 		return err
 	}
+	c.Printer.Verbose("Deleting VM Autoscaling Group with ID: %v", viper.GetString(core.GetFlagName(c.NS, config.ArgGroupId)))
 	resp, err := c.AutoscalingGroups().Delete(viper.GetString(core.GetFlagName(c.NS, config.ArgGroupId)))
 	if err != nil {
 		return err
@@ -317,47 +321,69 @@ func getNewAutoscalingGroup(c *core.CommandConfig) (*sdkAutoscaling.GroupPropert
 	input := ionoscloudAutoscaling.GroupProperties{}
 	// Autoscaling Group - VM Properties
 	input.SetName(viper.GetString(core.GetFlagName(c.NS, config.ArgName)))
+	c.Printer.Verbose("Property Name set: %v", viper.GetString(core.GetFlagName(c.NS, config.ArgName)))
 	input.SetMaxReplicaCount(viper.GetInt64(core.GetFlagName(c.NS, config.ArgMaxReplicaCount)))
+	c.Printer.Verbose("Property MaxReplicaCount set: %v", viper.GetInt64(core.GetFlagName(c.NS, config.ArgMaxReplicaCount)))
 	input.SetMinReplicaCount(viper.GetInt64(core.GetFlagName(c.NS, config.ArgMinReplicaCount)))
+	c.Printer.Verbose("Property MinReplicaCount set: %v", viper.GetInt64(core.GetFlagName(c.NS, config.ArgMinReplicaCount)))
 	input.SetTargetReplicaCount(viper.GetInt64(core.GetFlagName(c.NS, config.ArgTargetReplicaCount)))
+	c.Printer.Verbose("Property TargetReplicaCount set: %v", viper.GetInt64(core.GetFlagName(c.NS, config.ArgTargetReplicaCount)))
 
 	// Set Group Datacenter where the VMs will be created
 	// Note: MAKE SURE THE DATACENTER HAS THE SAME LOCATION AS TEMPLATE
 	datacenterId := viper.GetString(core.GetFlagName(c.NS, config.ArgDataCenterId))
 	inputDatacenter := ionoscloudAutoscaling.GroupPropertiesDatacenter{}
 	inputDatacenter.SetId(datacenterId)
+	c.Printer.Verbose("Property Datacenter ID set: %v", viper.GetString(core.GetFlagName(c.NS, config.ArgDataCenterId)))
 	input.SetDatacenter(inputDatacenter)
+	c.Printer.Verbose("Setting Datacenter where the VMs will be created. Note: Make sure it has the same location as the VM Autoscaling Template!")
 
 	// Set Group Template to be used for the VMs creation
 	templateId := viper.GetString(core.GetFlagName(c.NS, config.ArgTemplateId))
 	inputTemplate := ionoscloudAutoscaling.GroupPropertiesTemplate{}
 	inputTemplate.SetId(templateId)
+	c.Printer.Verbose("Property Template ID set: %v", viper.GetString(core.GetFlagName(c.NS, config.ArgTemplateId)))
 	input.SetTemplate(inputTemplate)
+	c.Printer.Verbose("Setting Template that will be used in VMs creation")
 
 	// Set Group Policy
 	inputPolicies := ionoscloudAutoscaling.GroupPolicy{}
 	inputPolicies.SetMetric(ionoscloudAutoscaling.Metric(viper.GetString(core.GetFlagName(c.NS, config.ArgMetric))))
+	c.Printer.Verbose("Property Metric for Group Policy set: %v", viper.GetString(core.GetFlagName(c.NS, config.ArgMetric)))
 	inputPolicies.SetRange(viper.GetString(core.GetFlagName(c.NS, config.ArgRange)))
+	c.Printer.Verbose("Property Range for Group Policy set: %v", viper.GetString(core.GetFlagName(c.NS, config.ArgRange)))
 	inputPolicies.SetUnit(ionoscloudAutoscaling.QueryUnit(viper.GetString(core.GetFlagName(c.NS, config.ArgUnit))))
+	c.Printer.Verbose("Property Unit for Group Policy set: %v", viper.GetString(core.GetFlagName(c.NS, config.ArgUnit)))
 	inputPolicies.SetScaleInThreshold(float32(viper.GetFloat64(core.GetFlagName(c.NS, config.ArgScaleInThreshold))))
+	c.Printer.Verbose("Property ScaleInThreshold for Group Policy set: %v", float32(viper.GetFloat64(core.GetFlagName(c.NS, config.ArgScaleInThreshold))))
 	inputPolicies.SetScaleOutThreshold(float32(viper.GetFloat64(core.GetFlagName(c.NS, config.ArgScaleOutThreshold))))
+	c.Printer.Verbose("Property ScaleOutThreshold set: %v", float32(viper.GetFloat64(core.GetFlagName(c.NS, config.ArgScaleOutThreshold))))
 
 	// Set Group Action Policy
 	// SCALE IN Action
 	inputScaleInAction := ionoscloudAutoscaling.GroupPolicyAction{}
 	inputScaleInAction.SetAmount(float32(viper.GetFloat64(core.GetFlagName(c.NS, config.ArgScaleInAmount))))
+	c.Printer.Verbose("Property Amount for SCALE_IN Action for Group Policy set: %v", float32(viper.GetFloat64(core.GetFlagName(c.NS, config.ArgScaleInAmount))))
 	inputScaleInAction.SetAmountType(ionoscloudAutoscaling.ActionAmount(viper.GetString(core.GetFlagName(c.NS, config.ArgScaleInAmountType))))
+	c.Printer.Verbose("Property Amount Type for SCALE_IN Action for Group Policy set: %v", viper.GetString(core.GetFlagName(c.NS, config.ArgScaleInAmountType)))
 	inputScaleInAction.SetCooldownPeriod(viper.GetString(core.GetFlagName(c.NS, config.ArgScaleInCoolDownPeriod)))
+	c.Printer.Verbose("Property CooldownPeriod for SCALE_IN Action for Group Policy set: %v", viper.GetString(core.GetFlagName(c.NS, config.ArgScaleInCoolDownPeriod)))
 	inputPolicies.SetScaleInAction(inputScaleInAction)
+	c.Printer.Verbose("Setting SCALE_IN Action for Group Policy")
 	// SCALE OUT Action
 	inputScaleOutAction := ionoscloudAutoscaling.GroupPolicyAction{}
 	inputScaleOutAction.SetAmount(float32(viper.GetFloat64(core.GetFlagName(c.NS, config.ArgScaleOutAmount))))
+	c.Printer.Verbose("Property Amount for SCALE_OUT Action for Group Policy set: %v", float32(viper.GetFloat64(core.GetFlagName(c.NS, config.ArgScaleOutAmount))))
 	inputScaleOutAction.SetAmountType(ionoscloudAutoscaling.ActionAmount(viper.GetString(core.GetFlagName(c.NS, config.ArgScaleOutAmountType))))
+	c.Printer.Verbose("Property Amount Type for SCALE_OUT Action for Group Policy set: %v", viper.GetString(core.GetFlagName(c.NS, config.ArgScaleOutAmountType)))
 	inputScaleOutAction.SetCooldownPeriod(viper.GetString(core.GetFlagName(c.NS, config.ArgScaleOutCoolDownPeriod)))
+	c.Printer.Verbose("Property CooldownPeriod for SCALE_OUT Action for Group Policy set: %v", viper.GetString(core.GetFlagName(c.NS, config.ArgScaleOutCoolDownPeriod)))
 	inputPolicies.SetScaleOutAction(inputScaleOutAction)
+	c.Printer.Verbose("Setting SCALE_OUT Action for Group Policy")
 
 	// Set Group Policy (required)
 	input.SetPolicy(inputPolicies)
+	c.Printer.Verbose("Setting Group Policy for VM Autoscaling Group")
 
 	return &sdkAutoscaling.GroupProperties{
 		GroupProperties: input,
@@ -370,36 +396,46 @@ func getUpdateAutoscalingGroup(c *core.CommandConfig, autoGroup *sdkAutoscaling.
 		// Autoscaling Group - Update VM Properties
 		if viper.IsSet(core.GetFlagName(c.NS, config.ArgName)) {
 			propertiesOk.SetName(viper.GetString(core.GetFlagName(c.NS, config.ArgName)))
+			c.Printer.Verbose("Property Name set: %v", viper.GetString(core.GetFlagName(c.NS, config.ArgName)))
 		}
 		if viper.IsSet(core.GetFlagName(c.NS, config.ArgMaxReplicaCount)) {
 			propertiesOk.SetMaxReplicaCount(viper.GetInt64(core.GetFlagName(c.NS, config.ArgMaxReplicaCount)))
+			c.Printer.Verbose("Property MaxReplicaCount set: %v", viper.GetInt64(core.GetFlagName(c.NS, config.ArgMaxReplicaCount)))
 		}
 		if viper.IsSet(core.GetFlagName(c.NS, config.ArgMinReplicaCount)) {
 			propertiesOk.SetMinReplicaCount(viper.GetInt64(core.GetFlagName(c.NS, config.ArgMinReplicaCount)))
+			c.Printer.Verbose("Property MinReplicaCount set: %v", viper.GetInt64(core.GetFlagName(c.NS, config.ArgMinReplicaCount)))
 		}
 		// Set Group Template to be used for the VMs creation
 		if viper.IsSet(core.GetFlagName(c.NS, config.ArgTemplateId)) {
 			templateId := viper.GetString(core.GetFlagName(c.NS, config.ArgTemplateId))
 			inputTemplate := ionoscloudAutoscaling.GroupPropertiesTemplate{}
 			inputTemplate.SetId(templateId)
+			c.Printer.Verbose("Property Template ID set: %v", viper.GetString(core.GetFlagName(c.NS, config.ArgTemplateId)))
 			propertiesOk.SetTemplate(inputTemplate)
+			c.Printer.Verbose("Updating Template that will be used in VMs creation")
 		}
 		// Set Group Policy
 		if policyOk, ok := propertiesOk.GetPolicyOk(); ok && policyOk != nil {
 			if viper.IsSet(core.GetFlagName(c.NS, config.ArgMetric)) {
 				policyOk.SetMetric(ionoscloudAutoscaling.Metric(viper.GetString(core.GetFlagName(c.NS, config.ArgMetric))))
+				c.Printer.Verbose("Property Metric for Group Policy set: %v", viper.GetString(core.GetFlagName(c.NS, config.ArgMetric)))
 			}
 			if viper.IsSet(core.GetFlagName(c.NS, config.ArgRange)) {
 				policyOk.SetRange(viper.GetString(core.GetFlagName(c.NS, config.ArgRange)))
+				c.Printer.Verbose("Property Range for Group Policy set: %v", viper.GetString(core.GetFlagName(c.NS, config.ArgRange)))
 			}
 			if viper.IsSet(core.GetFlagName(c.NS, config.ArgUnit)) {
 				policyOk.SetUnit(ionoscloudAutoscaling.QueryUnit(viper.GetString(core.GetFlagName(c.NS, config.ArgUnit))))
+				c.Printer.Verbose("Property Unit for Group Policy set: %v", viper.GetString(core.GetFlagName(c.NS, config.ArgUnit)))
 			}
 			if viper.IsSet(core.GetFlagName(c.NS, config.ArgScaleInThreshold)) {
 				policyOk.SetScaleInThreshold(float32(viper.GetFloat64(core.GetFlagName(c.NS, config.ArgScaleInThreshold))))
+				c.Printer.Verbose("Property ScaleInThreshold for Group Policy set: %v", float32(viper.GetFloat64(core.GetFlagName(c.NS, config.ArgScaleInThreshold))))
 			}
 			if viper.IsSet(core.GetFlagName(c.NS, config.ArgScaleOutThreshold)) {
 				policyOk.SetScaleOutThreshold(float32(viper.GetFloat64(core.GetFlagName(c.NS, config.ArgScaleOutThreshold))))
+				c.Printer.Verbose("Property ScaleOutThreshold set: %v", float32(viper.GetFloat64(core.GetFlagName(c.NS, config.ArgScaleOutThreshold))))
 			}
 
 			// Set Group Action Policy
@@ -407,12 +443,15 @@ func getUpdateAutoscalingGroup(c *core.CommandConfig, autoGroup *sdkAutoscaling.
 			if scaleInActionOk, ok := policyOk.GetScaleInActionOk(); ok && scaleInActionOk != nil {
 				if viper.IsSet(core.GetFlagName(c.NS, config.ArgScaleInAmount)) {
 					scaleInActionOk.SetAmount(float32(viper.GetFloat64(core.GetFlagName(c.NS, config.ArgScaleInAmount))))
+					c.Printer.Verbose("Property Amount for SCALE_IN Action for Group Policy set: %v", float32(viper.GetFloat64(core.GetFlagName(c.NS, config.ArgScaleInAmount))))
 				}
 				if viper.IsSet(core.GetFlagName(c.NS, config.ArgScaleInAmountType)) {
 					scaleInActionOk.SetAmountType(ionoscloudAutoscaling.ActionAmount(viper.GetString(core.GetFlagName(c.NS, config.ArgScaleInAmountType))))
+					c.Printer.Verbose("Property Amount Type for SCALE_IN Action for Group Policy set: %v", viper.GetString(core.GetFlagName(c.NS, config.ArgScaleInAmountType)))
 				}
 				if viper.IsSet(core.GetFlagName(c.NS, config.ArgScaleInCoolDownPeriod)) {
 					scaleInActionOk.SetCooldownPeriod(viper.GetString(core.GetFlagName(c.NS, config.ArgScaleInCoolDownPeriod)))
+					c.Printer.Verbose("Property CooldownPeriod for SCALE_IN Action for Group Policy set: %v", viper.GetString(core.GetFlagName(c.NS, config.ArgScaleInCoolDownPeriod)))
 				}
 				policyOk.SetScaleInAction(*scaleInActionOk)
 			}
@@ -420,12 +459,15 @@ func getUpdateAutoscalingGroup(c *core.CommandConfig, autoGroup *sdkAutoscaling.
 			if scaleOutActionOk, ok := policyOk.GetScaleOutActionOk(); ok && scaleOutActionOk != nil {
 				if viper.IsSet(core.GetFlagName(c.NS, config.ArgScaleOutAmount)) {
 					scaleOutActionOk.SetAmount(float32(viper.GetFloat64(core.GetFlagName(c.NS, config.ArgScaleOutAmount))))
+					c.Printer.Verbose("Property Amount for SCALE_OUT Action for Group Policy set: %v", float32(viper.GetFloat64(core.GetFlagName(c.NS, config.ArgScaleOutAmount))))
 				}
 				if viper.IsSet(core.GetFlagName(c.NS, config.ArgScaleOutAmountType)) {
 					scaleOutActionOk.SetAmountType(ionoscloudAutoscaling.ActionAmount(viper.GetString(core.GetFlagName(c.NS, config.ArgScaleOutAmountType))))
+					c.Printer.Verbose("Property Amount Type for SCALE_OUT Action for Group Policy set: %v", viper.GetString(core.GetFlagName(c.NS, config.ArgScaleOutAmountType)))
 				}
 				if viper.IsSet(core.GetFlagName(c.NS, config.ArgScaleOutCoolDownPeriod)) {
 					scaleOutActionOk.SetCooldownPeriod(viper.GetString(core.GetFlagName(c.NS, config.ArgScaleOutCoolDownPeriod)))
+					c.Printer.Verbose("Property CooldownPeriod for SCALE_OUT Action for Group Policy set: %v", viper.GetString(core.GetFlagName(c.NS, config.ArgScaleOutCoolDownPeriod)))
 				}
 				policyOk.SetScaleOutAction(*scaleOutActionOk)
 			}

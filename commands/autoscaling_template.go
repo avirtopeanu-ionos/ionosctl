@@ -184,6 +184,7 @@ func RunAutoscalingTemplateList(c *core.CommandConfig) error {
 }
 
 func RunAutoscalingTemplateGet(c *core.CommandConfig) error {
+	c.Printer.Verbose("Getting VM Autoscaling Template with ID %v", viper.GetString(core.GetFlagName(c.NS, config.ArgTemplateId)))
 	autoTemplate, _, err := c.AutoscalingTemplates().Get(viper.GetString(core.GetFlagName(c.NS, config.ArgTemplateId)))
 	if err != nil {
 		return err
@@ -196,6 +197,7 @@ func RunAutoscalingTemplateCreate(c *core.CommandConfig) error {
 	if err != nil {
 		return err
 	}
+	c.Printer.Verbose("Creating VM Autoscaling Template...")
 	dc, resp, err := c.AutoscalingTemplates().Create(sdkAutoscaling.Template{
 		Template: ionoscloudAutoscaling.Template{
 			Properties: &templateProperties.TemplateProperties,
@@ -211,6 +213,7 @@ func RunAutoscalingTemplateDelete(c *core.CommandConfig) error {
 	if err := utils.AskForConfirm(c.Stdin, c.Printer, "delete VM autoscaling template"); err != nil {
 		return err
 	}
+	c.Printer.Verbose("Deleting VM Autoscaling Template with ID %v", viper.GetString(core.GetFlagName(c.NS, config.ArgTemplateId)))
 	resp, err := c.AutoscalingTemplates().Delete(viper.GetString(core.GetFlagName(c.NS, config.ArgTemplateId)))
 	if err != nil {
 		return err
@@ -230,22 +233,30 @@ func getNewAutoscalingTemplate(c *core.CommandConfig) (*sdkAutoscaling.TemplateP
 	input := ionoscloudAutoscaling.TemplateProperties{}
 	// Autoscaling Template - VM Properties
 	input.SetName(viper.GetString(core.GetFlagName(c.NS, config.ArgName)))
+	c.Printer.Verbose("Property Name set: %v", viper.GetString(core.GetFlagName(c.NS, config.ArgName)))
 	input.SetLocation(viper.GetString(core.GetFlagName(c.NS, config.ArgLocation)))
+	c.Printer.Verbose("Property Location set: %v", viper.GetString(core.GetFlagName(c.NS, config.ArgLocation)))
 	input.SetAvailabilityZone(ionoscloudAutoscaling.AvailabilityZone(viper.GetString(core.GetFlagName(c.NS, config.ArgAvailabilityZone))))
+	c.Printer.Verbose("Property Availability Zone set: %v", viper.GetString(core.GetFlagName(c.NS, config.ArgAvailabilityZone)))
 	input.SetCores(viper.GetInt32(core.GetFlagName(c.NS, config.ArgCores)))
+	c.Printer.Verbose("Property Cores set: %v", viper.GetInt32(core.GetFlagName(c.NS, config.ArgCores)))
 	size, err := utils.ConvertSize(viper.GetString(core.GetFlagName(c.NS, config.ArgRam)), utils.MegaBytes)
 	if err != nil {
 		return nil, err
 	}
 	input.SetRam(int32(size))
+	c.Printer.Verbose("Property RAM set: %vMB", viper.GetInt32(core.GetFlagName(c.NS, config.ArgRam)))
 	if viper.IsSet(core.GetFlagName(c.NS, config.ArgCPUFamily)) {
 		input.SetCpuFamily(ionoscloudAutoscaling.CpuFamily(viper.GetString(core.GetFlagName(c.NS, config.ArgCPUFamily))))
+		c.Printer.Verbose("Property CPU Family set: %v", viper.GetString(core.GetFlagName(c.NS, config.ArgCpuFamily)))
 	}
 
 	// Autoscaling NIC Template
 	inputNics := make([]ionoscloudAutoscaling.TemplateNic, 0)
 	nicNames := viper.GetStringSlice(core.GetFlagName(c.NS, config.ArgTemplateNics))
+	c.Printer.Verbose("Property Name for NIC Templates set: %v", viper.GetStringSlice(core.GetFlagName(c.NS, config.ArgTemplateNics)))
 	lanIds := viper.GetIntSlice(core.GetFlagName(c.NS, config.ArgLanIds))
+	c.Printer.Verbose("Property Lan for NIC Templates set: %v", viper.GetStringSlice(core.GetFlagName(c.NS, config.ArgLanIds)))
 	if len(nicNames) != len(lanIds) {
 		return nil, errors.New("error creating NIC Templates. Hint: please use the `--lan-ids` and the `--template-nics` options with the same amount of values")
 	} else {
@@ -265,16 +276,23 @@ func getNewAutoscalingTemplate(c *core.CommandConfig) (*sdkAutoscaling.TemplateP
 		inputVolume := ionoscloudAutoscaling.TemplateVolume{}
 		// Set Properties for Autoscaling Volume Template
 		inputVolume.SetName(viper.GetString(core.GetFlagName(c.NS, config.ArgTemplateVolume)))
+		c.Printer.Verbose("Property Name for Volume Template set: %v", viper.GetString(core.GetFlagName(c.NS, config.ArgTemplateVolume)))
 		inputVolume.SetImage(viper.GetString(core.GetFlagName(c.NS, config.ArgImageId)))
+		c.Printer.Verbose("Property Image for Volume Template set: %v", viper.GetString(core.GetFlagName(c.NS, config.ArgImageId)))
 		inputVolume.SetImagePassword(viper.GetString(core.GetFlagName(c.NS, config.ArgPassword)))
+		c.Printer.Verbose("Property Password for Volume Template set")
 		inputVolume.SetType(ionoscloudAutoscaling.VolumeHwType(viper.GetString(core.GetFlagName(c.NS, config.ArgType))))
+		c.Printer.Verbose("Property Type for Volume Template set: %v", viper.GetString(core.GetFlagName(c.NS, config.ArgType)))
 		inputVolume.SetUserData(viper.GetString(core.GetFlagName(c.NS, config.ArgUserData)))
+		c.Printer.Verbose("Property User Data for Volume Template set: %v", viper.GetString(core.GetFlagName(c.NS, config.ArgUserData)))
 		inputVolume.SetSshKeys(viper.GetStringSlice(core.GetFlagName(c.NS, config.ArgSshKeys)))
+		c.Printer.Verbose("Property SSH Keys for Volume Template set")
 		volumeSize, err := utils.ConvertSize(viper.GetString(core.GetFlagName(c.NS, config.ArgSize)), utils.GigaBytes)
 		if err != nil {
 			return nil, err
 		}
 		inputVolume.SetSize(int32(volumeSize))
+		c.Printer.Verbose("Property Size for Volume Template set: %v GB", viper.GetString(core.GetFlagName(c.NS, config.ArgSize)))
 		inputVolumes = append(inputVolumes, inputVolume)
 		input.SetVolumes(inputVolumes)
 	}
