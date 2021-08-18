@@ -3,7 +3,6 @@ package commands
 import (
 	"context"
 	"errors"
-	ionoscloudAutoscaling "github.com/ionos-cloud/sdk-go-autoscaling"
 	"io"
 	"os"
 	"strings"
@@ -15,6 +14,7 @@ import (
 	"github.com/ionos-cloud/ionosctl/pkg/utils"
 	"github.com/ionos-cloud/ionosctl/pkg/utils/clierror"
 	"github.com/ionos-cloud/ionosctl/pkg/utils/printer"
+	ionoscloudAutoscaling "github.com/ionos-cloud/sdk-go-autoscaling"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -108,7 +108,7 @@ func PreRunAutoscalingGroupActionIds(c *core.PreCommandConfig) error {
 }
 
 func RunAutoscalingActionList(c *core.CommandConfig) error {
-	c.Printer.Verbose("Getting Actions for VM Autoscaling Group with ID %v", viper.GetString(core.GetFlagName(c.NS, config.ArgGroupId)))
+	c.Printer.Verbose("Getting Actions for VM Autoscaling Group with ID: %v", viper.GetString(core.GetFlagName(c.NS, config.ArgGroupId)))
 	autoscalingActions, _, err := c.AutoscalingGroups().ListActions(viper.GetString(core.GetFlagName(c.NS, config.ArgGroupId)))
 	if err != nil {
 		return err
@@ -125,7 +125,7 @@ func RunAutoscalingActionList(c *core.CommandConfig) error {
 }
 
 func RunAutoscalingActionGet(c *core.CommandConfig) error {
-	c.Printer.Verbose("Getting Action with ID: %v for VM Autoscaling Group with ID %v",
+	c.Printer.Verbose("Getting Action with ID: %v for VM Autoscaling Group with ID: %v",
 		viper.GetString(core.GetFlagName(c.NS, config.ArgActionId)), viper.GetString(core.GetFlagName(c.NS, config.ArgGroupId)))
 	if viper.GetBool(core.GetFlagName(c.NS, config.ArgWaitForState)) {
 		if err := utils.WaitForState(c, GetStateAutoscalingAction, viper.GetString(core.GetFlagName(c.NS, config.ArgActionId))); err != nil {

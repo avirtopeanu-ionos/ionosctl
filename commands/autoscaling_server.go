@@ -89,7 +89,7 @@ func PreRunAutoscalingGroupServerIds(c *core.PreCommandConfig) error {
 }
 
 func RunAutoscalingServerList(c *core.CommandConfig) error {
-	c.Printer.Verbose("Getting Server for VM Autoscaling Group with ID: %v", viper.GetString(core.GetFlagName(c.NS, config.ArgGroupId)))
+	c.Printer.Verbose("Getting Servers for VM Autoscaling Group with ID: %v", viper.GetString(core.GetFlagName(c.NS, config.ArgGroupId)))
 	autoscalingServers, _, err := c.AutoscalingGroups().ListServers(viper.GetString(core.GetFlagName(c.NS, config.ArgGroupId)))
 	if err != nil {
 		return err

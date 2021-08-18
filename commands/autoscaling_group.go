@@ -251,7 +251,7 @@ func RunAutoscalingGroupList(c *core.CommandConfig) error {
 }
 
 func RunAutoscalingGroupGet(c *core.CommandConfig) error {
-	c.Printer.Verbose("Getting VM Autoscaling Group with ID %v", viper.GetString(core.GetFlagName(c.NS, config.ArgGroupId)))
+	c.Printer.Verbose("Getting VM Autoscaling Group with ID: %v", viper.GetString(core.GetFlagName(c.NS, config.ArgGroupId)))
 	autoGroup, _, err := c.AutoscalingGroups().Get(viper.GetString(core.GetFlagName(c.NS, config.ArgGroupId)))
 	if err != nil {
 		return err

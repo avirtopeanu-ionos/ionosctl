@@ -174,7 +174,7 @@ func RunAutoscalingTemplateList(c *core.CommandConfig) error {
 }
 
 func RunAutoscalingTemplateGet(c *core.CommandConfig) error {
-	c.Printer.Verbose("Getting VM Autoscaling Template with ID %v", viper.GetString(core.GetFlagName(c.NS, config.ArgTemplateId)))
+	c.Printer.Verbose("Getting VM Autoscaling Template with ID: %v", viper.GetString(core.GetFlagName(c.NS, config.ArgTemplateId)))
 	autoTemplate, _, err := c.AutoscalingTemplates().Get(viper.GetString(core.GetFlagName(c.NS, config.ArgTemplateId)))
 	if err != nil {
 		return err
@@ -187,7 +187,7 @@ func RunAutoscalingTemplateCreate(c *core.CommandConfig) error {
 	if err != nil {
 		return err
 	}
-	c.Printer.Verbose("Creating VM Autoscaling Template...")
+	c.Printer.Verbose("Creating VM Autoscaling Template")
 	dc, resp, err := c.AutoscalingTemplates().Create(sdkAutoscaling.Template{
 		Template: ionoscloudAutoscaling.Template{
 			Properties: &templateProperties.TemplateProperties,
@@ -203,7 +203,7 @@ func RunAutoscalingTemplateDelete(c *core.CommandConfig) error {
 	if err := utils.AskForConfirm(c.Stdin, c.Printer, "delete VM autoscaling template"); err != nil {
 		return err
 	}
-	c.Printer.Verbose("Deleting VM Autoscaling Template with ID %v", viper.GetString(core.GetFlagName(c.NS, config.ArgTemplateId)))
+	c.Printer.Verbose("Deleting VM Autoscaling Template with ID: %v", viper.GetString(core.GetFlagName(c.NS, config.ArgTemplateId)))
 	resp, err := c.AutoscalingTemplates().Delete(viper.GetString(core.GetFlagName(c.NS, config.ArgTemplateId)))
 	if err != nil {
 		return err
