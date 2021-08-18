@@ -66,6 +66,7 @@ Also, the VM Autoscaling Template supports multiple NIC Templates. To create a V
       --template-volume string     Name of the Volume Template (default "Unnamed VM Autoscaling Template Volume")
       --type string                Type of the Volume (default "HDD")
       --user-data string           User-Data (Cloud Init) for the Volume Template
+  -v, --verbose                    see step by step process when running a command
 ```
 
 ## Examples

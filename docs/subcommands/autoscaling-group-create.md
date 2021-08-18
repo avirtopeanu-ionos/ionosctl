@@ -76,6 +76,7 @@ Required values to run command:
   -t, --target-replica-count int               The target number of VMs in this Group. Minimum: 0; Maximum: 200 (default 1)
   -i, --template-id string                     The unique Template Id (required)
       --unit string                            [Group Policy] Unit of the applied Metric (default "PER_HOUR")
+  -v, --verbose                                see step by step process when running a command
 ```
 
 ## Examples

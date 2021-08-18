@@ -45,6 +45,7 @@ Use this command to retrieve a complete list of VM Autoscaling Templates provisi
   -h, --help             help for list
   -o, --output string    Desired output format [text|json] (default "text")
   -q, --quiet            Quiet output
+  -v, --verbose          see step by step process when running a command
 ```
 
 ## Examples

@@ -53,6 +53,7 @@ Required values to run command:
   -o, --output string      Desired output format [text|json] (default "text")
   -q, --quiet              Quiet output
   -t, --timeout int        Timeout option for waiting for VM Autoscaling Action to be SUCCESSFUL [seconds] (default 600)
+  -v, --verbose            see step by step process when running a command
   -W, --wait-for-state     Wait for the Autoscaling Action to be SUCCESSFUL
 ```
 
