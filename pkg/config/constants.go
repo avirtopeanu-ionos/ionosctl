@@ -25,6 +25,8 @@ const (
 	ArgTimeoutShort          = "t"
 	ArgForce                 = "force"
 	ArgForceShort            = "f"
+	ArgVerbose               = "verbose"
+	ArgVerboseShort          = "v"
 	ArgServerUrl             = "api-url"
 	ArgAutoscalingUrl        = "api-autoscaling-url"
 	ArgServerUrlShort        = "u"
@@ -200,7 +202,6 @@ const (
 	ServerUrl              = "userdata.api-url"
 )
 
-// Custom env vars
 const (
 	IonosServerUrlEnvVar = "IONOS_API_URL"
 )
