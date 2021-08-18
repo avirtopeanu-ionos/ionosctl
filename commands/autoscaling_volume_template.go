@@ -61,6 +61,7 @@ func autoscalingVolumeTemplate() *core.Command {
 }
 
 func RunAutoscalingVolumeTemplateList(c *core.CommandConfig) error {
+	c.Printer.Verbose("Getting Volume Templates for Template with ID: %v", viper.GetString(core.GetFlagName(c.NS, config.ArgTemplateId)))
 	autoscalingTpl, _, err := c.AutoscalingTemplates().Get(viper.GetString(core.GetFlagName(c.NS, config.ArgTemplateId)))
 	if err != nil {
 		return err

@@ -60,6 +60,7 @@ func autoscalingNicTemplate() *core.Command {
 }
 
 func RunAutoscalingNicTemplateList(c *core.CommandConfig) error {
+	c.Printer.Verbose("Getting NIC Templates for Template with ID: %v", viper.GetString(core.GetFlagName(c.NS, config.ArgTemplateId)))
 	autoscalingTpl, _, err := c.AutoscalingTemplates().Get(viper.GetString(core.GetFlagName(c.NS, config.ArgTemplateId)))
 	if err != nil {
 		return err
